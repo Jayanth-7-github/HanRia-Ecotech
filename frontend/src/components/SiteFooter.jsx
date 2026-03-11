@@ -31,118 +31,110 @@ export default function SiteFooter() {
   };
 
   return (
-    <footer className="bg-stone-950 text-stone-200">
-      <div className="mx-auto max-w-6xl px-6 py-12">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
-          <div>
-            <p className="text-sm font-semibold text-white">HanRia Eco Tech</p>
-            <p className="mt-3 text-sm leading-6 text-stone-300">
-              Sustainable materials from agricultural waste—engineered for
-              modern products and a cleaner future.
-            </p>
-            <p className="mt-4 text-sm">
-              <a
-                className="text-emerald-300 hover:text-emerald-200"
-                href="mailto:info@hanriaecotech.com"
-              >
-                info@hanriaecotech.com
-              </a>
-            </p>
-          </div>
-
-          <div>
-            <p className="text-sm font-semibold text-white">Quick Links</p>
-            <ul className="mt-4 space-y-2 text-sm">
-              <li>
-                <Link className="text-stone-300 hover:text-white" to="/">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link className="text-stone-300 hover:text-white" to="/about">
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className="text-stone-300 hover:text-white"
-                  to="/technology"
-                >
-                  Our Technology
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className="text-stone-300 hover:text-white"
-                  to="/products"
-                >
-                  Products
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className="text-stone-300 hover:text-white"
-                  to="/services"
-                >
-                  Services
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className="text-stone-300 hover:text-white"
-                  to="/training"
-                >
-                  Training
-                </Link>
-              </li>
-              <li>
-                <Link className="text-stone-300 hover:text-white" to="/contact">
-                  Contact
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <p className="text-sm font-semibold text-white">Newsletter</p>
-            <p className="mt-3 text-sm leading-6 text-stone-300">
-              Get updates on new materials, training, and collaborations.
-            </p>
-            <form className="mt-4 flex gap-2" onSubmit={subscribe}>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email address"
-                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-stone-100 placeholder:text-stone-400"
-              />
-              <button
-                type="submit"
-                disabled={state === "sending" || !email}
-                className="shrink-0 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {state === "sending" ? "…" : "Join"}
-              </button>
-            </form>
-            {message ? (
-              <p
-                className={
-                  "mt-3 text-xs " +
-                  (state === "success" ? "text-emerald-200" : "text-stone-300")
-                }
-                role={state === "error" ? "alert" : undefined}
-              >
-                {message}
-              </p>
-            ) : null}
-          </div>
-        </div>
-
-        <div className="mt-10 border-t border-white/10 pt-6">
-          <p className="text-xs text-stone-400">
-            © {new Date().getFullYear()} HanRia Eco Tech. All rights reserved.
+    <footer>
+      <div className="footer-top">
+        <div className="footer-brand">
+          <h3>
+            HanRia <span>Eco Tech</span>
+          </h3>
+          <p>
+            Sustainable materials from agricultural waste, engineered for modern
+            products, circular manufacturing, and a cleaner future.
           </p>
+          <a className="footer-email" href="mailto:info@hanriaecotech.com">
+            info@hanriaecotech.com
+          </a>
         </div>
+
+        <div className="footer-col">
+          <h4>Explore</h4>
+          <ul className="footer-links">
+            <li>
+              <Link to="/">Home</Link>
+            </li>
+            <li>
+              <Link to="/about">About</Link>
+            </li>
+            <li>
+              <Link to="/technology">Technology</Link>
+            </li>
+            <li>
+              <Link to="/products">Products</Link>
+            </li>
+          </ul>
+        </div>
+
+        <div className="footer-col">
+          <h4>Offerings</h4>
+          <ul className="footer-links">
+            <li>
+              <Link to="/services">Services</Link>
+            </li>
+            <li>
+              <Link to="/training">Training</Link>
+            </li>
+            <li>
+              <Link to="/contact">Contact</Link>
+            </li>
+          </ul>
+        </div>
+
+        <div className="footer-col">
+          <h4>Newsletter</h4>
+          <p className="newsletter-label">
+            Get updates on new materials, training programs, and collaboration
+            opportunities.
+          </p>
+          <form className="newsletter-form" onSubmit={subscribe}>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email address"
+              className="newsletter-input"
+            />
+            <button
+              type="submit"
+              disabled={state === "sending" || !email}
+              className="newsletter-btn"
+            >
+              {state === "sending" ? "..." : "Join"}
+            </button>
+          </form>
+          {message ? (
+            <p
+              className="newsletter-label"
+              style={{
+                marginTop: 12,
+                marginBottom: 0,
+                color:
+                  state === "success"
+                    ? "rgba(212, 168, 90, 0.95)"
+                    : "rgba(255, 255, 255, 0.7)",
+              }}
+              role={state === "error" ? "alert" : undefined}
+            >
+              {message}
+            </p>
+          ) : null}
+        </div>
+      </div>
+
+      <div className="footer-bottom">
+        <p>
+          © {new Date().getFullYear()} HanRia Eco Tech. All rights reserved.
+        </p>
+        <ul className="footer-bottom-links">
+          <li>
+            <Link to="/products">Products</Link>
+          </li>
+          <li>
+            <Link to="/services">Services</Link>
+          </li>
+          <li>
+            <Link to="/contact">Contact</Link>
+          </li>
+        </ul>
       </div>
     </footer>
   );

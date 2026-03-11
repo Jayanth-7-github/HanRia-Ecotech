@@ -158,10 +158,10 @@ function CategoryIcon({ kind }) {
 
 function ProductCard({ name, description }) {
   return (
-    <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
-      <p className="text-sm font-semibold text-stone-900">{name}</p>
+    <div className="products-result-card">
+      <p className="products-result-title">{name}</p>
       {description ? (
-        <p className="mt-2 text-sm leading-6 text-stone-600">{description}</p>
+        <p className="products-result-desc">{description}</p>
       ) : null}
     </div>
   );
@@ -241,162 +241,139 @@ export default function Products() {
   }, [activeCategory, q]);
 
   return (
-    <main className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-      <div className="max-w-3xl">
-        <p className="text-xs font-semibold uppercase tracking-wide text-emerald-800">
-          Products
-        </p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-tight text-stone-900 sm:text-4xl">
-          Eco-Friendly Products Built From Agricultural Waste
-        </h1>
-        <p className="mt-4 text-base leading-7 text-stone-600">
-          Explore product categories built on natural fibers and circular
-          innovation. Select a category to view the product list.
-        </p>
-      </div>
-
-      <section className="mt-10">
-        <div className="max-w-3xl">
-          <label
-            className="text-sm font-medium text-stone-700"
-            htmlFor="search"
-          >
-            Search products
-          </label>
-          <input
-            id="search"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Search by name or description"
-            className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-emerald-600"
-          />
+    <main className="products-page">
+      <div className="products-page-wrap">
+        <div className="products-page-head">
+          <p className="section-eyebrow">Products</p>
+          <h1 className="section-title">
+            Eco-Friendly Products Built From Agricultural Waste
+          </h1>
+          <p className="section-desc">
+            Explore product categories built on natural fibers and circular
+            innovation. Select a category to view the product list.
+          </p>
         </div>
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {categories.map((category) => {
-            const isActive = category.category_name === activeCategory;
-            return (
-              <div
-                key={category._id}
-                className={
-                  "rounded-2xl border bg-white p-6 shadow-sm " +
-                  (isActive
-                    ? "border-emerald-300 ring-1 ring-emerald-200"
-                    : "border-stone-200")
-                }
-              >
-                <div className="flex items-start gap-3">
-                  <div className="mt-0.5 rounded-xl bg-emerald-50 p-2">
-                    <CategoryIcon kind={kindFromName(category.category_name)} />
-                  </div>
-                  <div className="min-w-0">
-                    <h2 className="text-base font-semibold text-stone-900">
-                      {category.category_name}
-                    </h2>
-                    <p className="mt-2 text-sm leading-6 text-stone-600">
-                      {category.description}
-                    </p>
-                    <div className="mt-4">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setActiveCategory(category.category_name)
-                        }
-                        className="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700"
-                      >
-                        View Products
-                      </button>
+        <section className="products-search-section">
+          <div className="products-search-head">
+            <label className="products-search-label" htmlFor="search">
+              Search products
+            </label>
+            <input
+              id="search"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Search by name or description"
+              className="products-search-input"
+            />
+          </div>
+
+          <div className="products-category-grid">
+            {categories.map((category) => {
+              const isActive = category.category_name === activeCategory;
+              return (
+                <div
+                  key={category._id}
+                  className={`products-category-card${isActive ? " is-active" : ""}`}
+                >
+                  <div className="products-category-row">
+                    <div className="products-category-icon">
+                      <CategoryIcon
+                        kind={kindFromName(category.category_name)}
+                      />
+                    </div>
+                    <div className="products-category-copy">
+                      <h2>{category.category_name}</h2>
+                      <p>{category.description}</p>
+                      <div className="products-category-action">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setActiveCategory(category.category_name)
+                          }
+                          className="products-category-button"
+                        >
+                          View Products
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-        {error ? (
-          <p className="mt-4 text-sm text-stone-700" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </section>
-
-      <section className="mt-14">
-        {!activeCategoryObj && !q ? (
-          <div className="rounded-2xl border border-stone-200 bg-white p-6 text-sm text-stone-600 shadow-sm">
-            Select a category to view products.
+              );
+            })}
           </div>
-        ) : (
-          <>
-            <div className="max-w-3xl">
-              {activeCategoryObj ? (
-                <>
-                  <h2 className="text-xl font-semibold tracking-tight text-stone-900 sm:text-2xl">
-                    {activeCategoryObj.category_name}
-                  </h2>
-                  <p className="mt-3 text-sm leading-6 text-stone-600">
-                    {activeCategoryObj.description}
-                  </p>
-                </>
-              ) : (
-                <h2 className="text-xl font-semibold tracking-tight text-stone-900 sm:text-2xl">
-                  Search results
-                </h2>
-              )}
-            </div>
+          {error ? (
+            <p className="products-page-error" role="alert">
+              {error}
+            </p>
+          ) : null}
+        </section>
 
-            <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {loading ? (
-                <div className="rounded-2xl border border-stone-200 bg-white p-6 text-sm text-stone-600 shadow-sm">
-                  Loading products…
-                </div>
-              ) : products.length === 0 ? (
-                <div className="rounded-2xl border border-stone-200 bg-white p-6 text-sm text-stone-600 shadow-sm">
-                  No products found.
-                </div>
-              ) : (
-                products.map((product) => (
-                  <Link key={product._id} to={`/products/${product._id}`}>
-                    <ProductCard
-                      name={product.name}
-                      description={product.description}
-                    />
-                  </Link>
-                ))
-              )}
+        <section className="products-results-section">
+          {!activeCategoryObj && !q ? (
+            <div className="products-empty-state">
+              Select a category to view products.
             </div>
-          </>
-        )}
-      </section>
+          ) : (
+            <>
+              <div className="products-results-head">
+                {activeCategoryObj ? (
+                  <>
+                    <h2>{activeCategoryObj.category_name}</h2>
+                    <p>{activeCategoryObj.description}</p>
+                  </>
+                ) : (
+                  <h2>Search results</h2>
+                )}
+              </div>
 
-      <section className="mt-16 overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-sm">
-        <div className="bg-linear-to-r from-emerald-50 via-white to-stone-50 p-8 sm:p-10">
-          <div className="grid items-center gap-8 lg:grid-cols-2">
-            <div>
-              <h2 className="text-2xl font-semibold tracking-tight text-stone-900 sm:text-3xl">
-                Want a product recommendation?
-              </h2>
-              <p className="mt-4 text-base leading-7 text-stone-600">
+              <div className="products-result-grid">
+                {loading ? (
+                  <div className="products-empty-state">Loading products…</div>
+                ) : products.length === 0 ? (
+                  <div className="products-empty-state">No products found.</div>
+                ) : (
+                  products.map((product) => (
+                    <Link
+                      key={product._id}
+                      to={`/products/${product._id}`}
+                      className="products-result-link"
+                    >
+                      <ProductCard
+                        name={product.name}
+                        description={product.description}
+                      />
+                    </Link>
+                  ))
+                )}
+              </div>
+            </>
+          )}
+        </section>
+
+        <section className="products-cta-shell">
+          <div className="products-cta-card">
+            <div className="products-cta-copy">
+              <h2>Want a product recommendation?</h2>
+              <p>
                 Share your use case and target requirements. We’ll suggest the
                 best category and a clear next step for evaluation.
               </p>
             </div>
-            <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
-              <Link
-                to="/contact"
-                className="inline-flex items-center justify-center rounded-xl bg-emerald-700 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800"
-              >
+            <div className="products-cta-actions">
+              <Link to="/contact" className="btn-forest">
                 Contact Us
               </Link>
               <a
                 href="mailto:info@hanriaecotech.com?subject=Products%20Inquiry%20%E2%80%94%20HanRia%20Eco%20Tech"
-                className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-semibold text-stone-800 hover:bg-stone-50"
+                className="btn-outline-forest"
               >
                 Email Products Team
               </a>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </main>
   );
 }

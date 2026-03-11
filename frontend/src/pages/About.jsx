@@ -1,4 +1,3 @@
-import Card from "../components/Card.jsx";
 import { innovationAreas } from "../data/siteData.js";
 import { useEffect, useState } from "react";
 import { apiUrl } from "../api.js";
@@ -41,14 +40,14 @@ function StatementIcon({ name }) {
 
 function StatementCard({ icon, title, description }) {
   return (
-    <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-      <div className="flex items-start gap-3">
-        <div className="rounded-xl bg-emerald-50 p-2">
+    <div className="about-statement-card reveal">
+      <div className="about-statement-row">
+        <div className="about-statement-icon">
           <StatementIcon name={icon} />
         </div>
-        <div>
-          <h2 className="text-base font-semibold text-stone-900">{title}</h2>
-          <p className="mt-2 text-sm leading-6 text-stone-600">{description}</p>
+        <div className="about-statement-copy">
+          <h2>{title}</h2>
+          <p>{description}</p>
         </div>
       </div>
     </div>
@@ -85,166 +84,148 @@ export default function About() {
   return (
     <main>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-white">
-        <div className="absolute inset-0 bg-linear-to-b from-emerald-50 via-white to-stone-50" />
-        <div className="relative mx-auto max-w-6xl px-6 py-16 sm:py-20">
-          <div className="max-w-3xl">
-            <p className="text-xs font-semibold uppercase tracking-wide text-emerald-800">
-              About
-            </p>
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight text-stone-900 sm:text-5xl">
-              About HanRia Eco Tech
-            </h1>
-            <p className="mt-4 text-base leading-7 text-stone-600 sm:text-lg">
-              HanRia Eco Tech converts agricultural waste into eco-friendly
-              materials engineered for modern products. We focus on natural
-              fiber composites and sustainable material engineering to help
-              industries reduce plastic use and lower environmental impact.
-            </p>
+      <section className="about">
+        <p className="section-eyebrow">About</p>
+        <h1 className="section-title">About HanRia Eco Tech</h1>
+        <p className="section-desc">
+          HanRia Eco Tech converts agricultural waste into eco-friendly
+          materials engineered for modern products. We focus on natural fiber
+          composites and sustainable material engineering to help industries
+          reduce plastic use and lower environmental impact.
+        </p>
+      </section>
+
+      {/* Mission + Vision */}
+      <section className="about-page-section">
+        <div className="about-page-wrap">
+          <div className="about-statement-grid">
+            <StatementCard
+              icon="mission"
+              title="Company mission"
+              description={missionText}
+            />
+            <StatementCard
+              icon="vision"
+              title="Company vision"
+              description={visionText}
+            />
+          </div>
+
+          <div className="about-pillars-grid">
+            {[
+              {
+                title: "Practical innovation",
+                description:
+                  "We focus on solutions that can move from research to real products without unnecessary complexity.",
+              },
+              {
+                title: "Nature-first materials",
+                description:
+                  "We prioritize renewable inputs and circular thinking—turning residues into reliable material streams.",
+              },
+              {
+                title: "Partner-ready",
+                description:
+                  "We collaborate with teams to validate performance, improve manufacturability, and support adoption.",
+              },
+            ].map((item) => (
+              <article key={item.title} className="about-pillar-card reveal">
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Mission + Vision */}
-      <section className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-        <div className="grid gap-5 md:grid-cols-2">
-          <StatementCard
-            icon="mission"
-            title="Company mission"
-            description={missionText}
-          />
-          <StatementCard
-            icon="vision"
-            title="Company vision"
-            description={visionText}
-          />
-        </div>
-
-        <div className="mt-10 grid gap-5 sm:grid-cols-3">
-          {[
-            {
-              title: "Practical innovation",
-              description:
-                "We focus on solutions that can move from research to real products without unnecessary complexity.",
-            },
-            {
-              title: "Nature-first materials",
-              description:
-                "We prioritize renewable inputs and circular thinking—turning residues into reliable material streams.",
-            },
-            {
-              title: "Partner-ready",
-              description:
-                "We collaborate with teams to validate performance, improve manufacturability, and support adoption.",
-            },
-          ].map((item) => (
-            <div
-              key={item.title}
-              className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
-            >
-              <p className="text-sm font-semibold text-stone-900">
-                {item.title}
-              </p>
-              <p className="mt-2 text-sm leading-6 text-stone-600">
-                {item.description}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* Story */}
-      <section className="bg-white">
-        <div className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-          <div className="max-w-3xl">
-            <h2 className="text-2xl font-semibold tracking-tight text-stone-900 sm:text-3xl">
-              Our story
+      <section className="about-story-section">
+        <div className="about-page-wrap">
+          <div className="about-story-copy reveal">
+            <p className="section-eyebrow">Our Story</p>
+            <h2 className="section-title">
+              Turning agricultural residues into material value
             </h2>
-            <p className="mt-4 text-base leading-7 text-stone-600">
+            <p>
               Every harvest creates a new wave of agricultural residues. When
               treated as waste, these materials often end up burned or
-              discarded—adding environmental pressure.
+              discarded, adding environmental pressure and missing the chance to
+              become useful industrial inputs.
             </p>
-            <p className="mt-4 text-base leading-7 text-stone-600">
+            <p>
               At HanRia Eco Tech, we view these residues as future-ready raw
               inputs. With the right engineering, natural fibers can be
-              transformed into materials that fit modern
-              manufacturing—supporting a more circular economy.
+              transformed into materials that fit modern manufacturing,
+              supporting a more circular economy with less waste and more local
+              material value.
             </p>
           </div>
         </div>
       </section>
 
       {/* Core focus areas */}
-      <section className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-        <div className="max-w-3xl">
-          <h2 className="text-2xl font-semibold tracking-tight text-stone-900 sm:text-3xl">
-            Core focus areas
-          </h2>
-          <p className="mt-4 text-base leading-7 text-stone-600">
-            Our work spans research and engineering—from material formulation to
-            application-focused development.
-          </p>
-        </div>
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {innovationAreas.map((item) => (
-            <Card
-              key={item.title}
-              title={item.title}
-              description={item.description}
-            />
-          ))}
+      <section className="about-page-section about-focus-section">
+        <div className="about-page-wrap">
+          <div className="about-focus-head reveal">
+            <p className="section-eyebrow">Focus Areas</p>
+            <h2 className="section-title">Core focus areas</h2>
+            <p className="section-desc">
+              Our work spans research and engineering—from material formulation
+              to application-focused development.
+            </p>
+          </div>
+          <div className="about-focus-grid">
+            {innovationAreas.map((item, index) => (
+              <article
+                key={item.title}
+                className={`about-focus-card reveal${index % 3 === 1 ? " reveal-d1" : index % 3 === 2 ? " reveal-d2" : ""}`}
+              >
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Sustainability impact */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-linear-to-b from-emerald-950 via-emerald-900 to-stone-950" />
-        <div className="relative mx-auto max-w-6xl px-6 py-16 sm:py-20">
-          <div className="max-w-3xl">
-            <h2 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+      <section className="about-impact">
+        <div className="about-impact-inner">
+          <div className="about-impact-copy reveal">
+            <p className="section-eyebrow about-impact-eyebrow">
+              Sustainability
+            </p>
+            <h2 className="section-title about-impact-title">
               Sustainability impact
             </h2>
-            <p className="mt-4 text-base leading-7 text-emerald-50/90">
+            <p className="about-impact-desc">
               Our impact is driven by replacing fossil-based materials and
               capturing value from residues—supporting cleaner products and
               responsible supply chains.
             </p>
-            <ul className="mt-8 space-y-3 text-sm text-emerald-50/90">
-              <li className="flex gap-2">
-                <span
-                  className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-300"
-                  aria-hidden="true"
-                />
-                <span className="leading-6">
+            <ul className="about-impact-list">
+              <li className="about-impact-item">
+                <span className="about-impact-dot" aria-hidden="true" />
+                <span>
                   Reduces agricultural residue waste through upcycling and reuse
                 </span>
               </li>
-              <li className="flex gap-2">
-                <span
-                  className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-300"
-                  aria-hidden="true"
-                />
-                <span className="leading-6">
+              <li className="about-impact-item">
+                <span className="about-impact-dot" aria-hidden="true" />
+                <span>
                   Enables lower-impact alternatives to conventional plastics and
                   composites
                 </span>
               </li>
-              <li className="flex gap-2">
-                <span
-                  className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-300"
-                  aria-hidden="true"
-                />
-                <span className="leading-6">
+              <li className="about-impact-item">
+                <span className="about-impact-dot" aria-hidden="true" />
+                <span>
                   Supports circular manufacturing with renewable inputs
                 </span>
               </li>
-              <li className="flex gap-2">
-                <span
-                  className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-300"
-                  aria-hidden="true"
-                />
-                <span className="leading-6">
+              <li className="about-impact-item">
+                <span className="about-impact-dot" aria-hidden="true" />
+                <span>
                   Encourages sustainable design and engineering practices
                 </span>
               </li>

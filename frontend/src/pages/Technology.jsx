@@ -313,69 +313,53 @@ export default function Technology() {
   return (
     <main>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-white">
-        <div className="absolute inset-0 bg-linear-to-b from-emerald-50 via-white to-stone-50" />
-        <div className="relative mx-auto max-w-6xl px-6 py-16 sm:py-20">
-          <div className="max-w-3xl">
-            <p className="text-xs font-semibold uppercase tracking-wide text-emerald-800">
-              Technology
-            </p>
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight text-stone-900 sm:text-5xl">
-              Sustainable Material Innovation
-            </h1>
-            <p className="mt-4 text-base leading-7 text-stone-600 sm:text-lg">
-              HanRia Eco Tech builds eco-material solutions by turning
-              agricultural waste and natural fibers into engineered materials
-              for real products—designed for performance, scalability, and a
-              lower environmental footprint.
-            </p>
+      <section className="tech-section">
+        <div className="tech-page-wrap">
+          <p className="section-eyebrow">Technology</p>
+          <h1 className="section-title">Sustainable Material Innovation</h1>
+          <p className="section-desc">
+            HanRia Eco Tech builds eco-material solutions by turning
+            agricultural waste and natural fibers into engineered materials for
+            real products, designed for performance, scalability, and a lower
+            environmental footprint.
+          </p>
 
-            {technologies.length > 0 ? (
-              <div className="mt-8">
-                <p className="text-sm font-semibold text-stone-900">
-                  Technologies
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {technologies.map((t) => (
-                    <span
-                      key={t}
-                      className="rounded-full border border-emerald-200 bg-white px-3 py-1 text-xs font-semibold text-emerald-900"
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
+          {technologies.length > 0 ? (
+            <div className="tech-chip-block">
+              <p className="tech-chip-title">Technologies</p>
+              <div className="tech-chip-cloud">
+                {technologies.map((t) => (
+                  <span key={t} className="tech-chip">
+                    {t}
+                  </span>
+                ))}
               </div>
-            ) : null}
-          </div>
+            </div>
+          ) : null}
         </div>
       </section>
 
       {/* Technology sections */}
-      <section className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-        <div className="space-y-12">
+      <section className="tech-page-section">
+        <div className="tech-page-wrap tech-feature-stack">
           {sections.map((section, index) => {
             const reverse = index % 2 === 1;
 
             return (
               <div
                 key={section.key}
-                className="grid items-center gap-8 lg:grid-cols-2"
+                className={`tech-feature-row${reverse ? " is-reverse" : ""}`}
               >
-                <div className={reverse ? "lg:order-2" : ""}>
-                  <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-3 py-1 text-xs font-semibold text-emerald-900">
+                <div className="tech-feature-copy">
+                  <div className="tech-feature-badge">
                     <TechIcon name={section.icon} />
                     Innovation Area
                   </div>
-                  <h2 className="mt-4 text-2xl font-semibold tracking-tight text-stone-900 sm:text-3xl">
-                    {section.title}
-                  </h2>
-                  <p className="mt-4 text-base leading-7 text-stone-600">
-                    {section.description}
-                  </p>
+                  <h2>{section.title}</h2>
+                  <p>{section.description}</p>
                 </div>
 
-                <div className={reverse ? "lg:order-1" : ""}>
+                <div className="tech-feature-art">
                   <Illustration variant={section.illustration} />
                 </div>
               </div>
@@ -385,22 +369,19 @@ export default function Technology() {
       </section>
 
       {/* CTA */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-linear-to-br from-emerald-950 via-emerald-900 to-stone-950" />
-        <div className="relative mx-auto max-w-6xl px-6 py-16 sm:py-20">
-          <div className="max-w-3xl">
-            <h2 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+      <section className="tech-cta">
+        <div className="tech-page-wrap tech-cta-inner">
+          <div className="tech-cta-copy">
+            <p className="section-eyebrow tech-cta-eyebrow">Work With Us</p>
+            <h2 className="section-title tech-cta-title">
               Bring eco-material innovation into your product.
             </h2>
-            <p className="mt-4 text-base leading-7 text-emerald-50/90">
+            <p className="tech-cta-desc">
               If you have performance targets or a specific application, we can
               help translate material concepts into a practical plan.
             </p>
-            <div className="mt-8">
-              <Link
-                to="/contact"
-                className="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700"
-              >
+            <div className="tech-cta-actions">
+              <Link to="/contact" className="btn-gold">
                 Talk to our team
               </Link>
             </div>

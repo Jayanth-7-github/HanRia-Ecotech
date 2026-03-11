@@ -113,23 +113,20 @@ export default function Services() {
   };
 
   const ServiceCard = ({ icon, title, description, bullets }) => (
-    <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-      <div className="flex items-start gap-3">
-        <div className="rounded-xl bg-emerald-50 p-2">
+    <div className="services-detail-card reveal">
+      <div className="services-detail-row">
+        <div className="services-detail-icon">
           <ServiceIcon name={icon} />
         </div>
-        <div className="min-w-0">
-          <h2 className="text-base font-semibold text-stone-900">{title}</h2>
-          <p className="mt-2 text-sm leading-6 text-stone-600">{description}</p>
+        <div className="services-detail-copy">
+          <h2>{title}</h2>
+          <p>{description}</p>
           {Array.isArray(bullets) && bullets.length > 0 ? (
-            <ul className="mt-4 space-y-2 text-sm text-stone-600">
+            <ul className="services-detail-list">
               {bullets.map((item) => (
-                <li key={item} className="flex gap-2">
-                  <span
-                    className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-600"
-                    aria-hidden="true"
-                  />
-                  <span className="leading-6">{item}</span>
+                <li key={item} className="services-detail-item">
+                  <span className="services-detail-dot" aria-hidden="true" />
+                  <span>{item}</span>
                 </li>
               ))}
             </ul>
@@ -216,27 +213,22 @@ export default function Services() {
   return (
     <main>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-white">
-        <div className="absolute inset-0 bg-linear-to-b from-emerald-50 via-white to-stone-50" />
-        <div className="relative mx-auto max-w-6xl px-6 py-16 sm:py-20">
-          <div className="max-w-3xl">
-            <p className="text-xs font-semibold uppercase tracking-wide text-emerald-800">
-              Services
-            </p>
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight text-stone-900 sm:text-5xl">
-              Sustainable Innovation Services
-            </h1>
-            <p className="mt-4 text-base leading-7 text-stone-600 sm:text-lg">
+      <section className="services-page-section">
+        <div className="services-page-wrap">
+          <div className="services-page-head">
+            <p className="section-eyebrow">Services</p>
+            <h1 className="section-title">Sustainable Innovation Services</h1>
+            <p className="section-desc">
               We help partners turn sustainable material ideas into real-world
-              products—from R&D and prototyping to training and consultancy.
+              products—from R&amp;D and prototyping to training and consultancy.
             </p>
           </div>
         </div>
       </section>
 
       {/* Service cards */}
-      <section className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-        <div className="grid gap-5 md:grid-cols-2">
+      <section className="services-page-section services-card-section">
+        <div className="services-page-wrap services-card-grid">
           {apiServices.length > 0
             ? apiServices.map((s, idx) => (
                 <ServiceCard
@@ -304,24 +296,24 @@ export default function Services() {
       </section>
 
       {/* Requests */}
-      <section className="bg-white">
-        <div className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-          <div className="max-w-3xl">
-            <h2 className="text-2xl font-semibold tracking-tight text-stone-900 sm:text-3xl">
-              Submit a request
-            </h2>
-            <p className="mt-4 text-base leading-7 text-stone-600">
+      <section className="services-page-section services-requests-section">
+        <div className="services-page-wrap">
+          <div className="services-page-head reveal">
+            <p className="section-eyebrow">Requests</p>
+            <h2 className="section-title">Submit a request</h2>
+            <p className="section-desc">
               Send details for collaboration or custom product development. You
               can attach a PDF if available.
             </p>
           </div>
 
-          <div className="mt-10 grid gap-5 lg:grid-cols-2">
-            <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-              <h3 className="text-base font-semibold text-stone-900">
-                Research collaboration
-              </h3>
-              <form className="mt-4 space-y-3" onSubmit={submitCollaboration}>
+          <div className="services-request-grid">
+            <div className="services-request-card reveal">
+              <h3>Research collaboration</h3>
+              <form
+                className="services-request-form"
+                onSubmit={submitCollaboration}
+              >
                 <input
                   required
                   value={collabForm.name}
@@ -329,7 +321,7 @@ export default function Services() {
                     setCollabForm((p) => ({ ...p, name: e.target.value }))
                   }
                   placeholder="Name"
-                  className="w-full rounded-xl border border-stone-300 px-4 py-2.5 text-sm"
+                  className="services-field"
                 />
                 <input
                   value={collabForm.organization}
@@ -340,7 +332,7 @@ export default function Services() {
                     }))
                   }
                   placeholder="Organization"
-                  className="w-full rounded-xl border border-stone-300 px-4 py-2.5 text-sm"
+                  className="services-field"
                 />
                 <input
                   required
@@ -350,7 +342,7 @@ export default function Services() {
                     setCollabForm((p) => ({ ...p, email: e.target.value }))
                   }
                   placeholder="Email"
-                  className="w-full rounded-xl border border-stone-300 px-4 py-2.5 text-sm"
+                  className="services-field"
                 />
                 <textarea
                   rows={4}
@@ -362,7 +354,7 @@ export default function Services() {
                     }))
                   }
                   placeholder="Research area / proposal summary"
-                  className="w-full rounded-xl border border-stone-300 px-4 py-2.5 text-sm"
+                  className="services-field services-textarea"
                 />
                 <input
                   type="file"
@@ -373,23 +365,18 @@ export default function Services() {
                       proposal: e.target.files?.[0] ?? null,
                     }))
                   }
-                  className="w-full text-sm"
+                  className="services-file"
                 />
                 <button
                   type="submit"
                   disabled={collabState === "sending"}
-                  className="inline-flex w-full items-center justify-center rounded-xl bg-emerald-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800 disabled:opacity-60"
+                  className="services-submit"
                 >
                   {collabState === "sending" ? "Submitting…" : "Submit request"}
                 </button>
                 {collabMessage ? (
                   <p
-                    className={
-                      "text-sm " +
-                      (collabState === "success"
-                        ? "text-emerald-800"
-                        : "text-stone-700")
-                    }
+                    className="services-status"
                     role={collabState === "error" ? "alert" : undefined}
                   >
                     {collabMessage}
@@ -398,11 +385,12 @@ export default function Services() {
               </form>
             </div>
 
-            <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-              <h3 className="text-base font-semibold text-stone-900">
-                Custom product development
-              </h3>
-              <form className="mt-4 space-y-3" onSubmit={submitCustomRequest}>
+            <div className="services-request-card reveal reveal-d1">
+              <h3>Custom product development</h3>
+              <form
+                className="services-request-form"
+                onSubmit={submitCustomRequest}
+              >
                 <input
                   required
                   value={customForm.company_name}
@@ -413,7 +401,7 @@ export default function Services() {
                     }))
                   }
                   placeholder="Company name"
-                  className="w-full rounded-xl border border-stone-300 px-4 py-2.5 text-sm"
+                  className="services-field"
                 />
                 <input
                   required
@@ -423,16 +411,16 @@ export default function Services() {
                     setCustomForm((p) => ({ ...p, email: e.target.value }))
                   }
                   placeholder="Email"
-                  className="w-full rounded-xl border border-stone-300 px-4 py-2.5 text-sm"
+                  className="services-field"
                 />
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="services-inline-grid">
                   <input
                     value={customForm.industry}
                     onChange={(e) =>
                       setCustomForm((p) => ({ ...p, industry: e.target.value }))
                     }
                     placeholder="Industry"
-                    className="w-full rounded-xl border border-stone-300 px-4 py-2.5 text-sm"
+                    className="services-field"
                   />
                   <input
                     value={customForm.material_preference}
@@ -443,7 +431,7 @@ export default function Services() {
                       }))
                     }
                     placeholder="Material preference"
-                    className="w-full rounded-xl border border-stone-300 px-4 py-2.5 text-sm"
+                    className="services-field"
                   />
                 </div>
                 <textarea
@@ -457,7 +445,7 @@ export default function Services() {
                     }))
                   }
                   placeholder="Product description / requirements"
-                  className="w-full rounded-xl border border-stone-300 px-4 py-2.5 text-sm"
+                  className="services-field services-textarea"
                 />
                 <input
                   type="file"
@@ -468,23 +456,18 @@ export default function Services() {
                       attachment: e.target.files?.[0] ?? null,
                     }))
                   }
-                  className="w-full text-sm"
+                  className="services-file"
                 />
                 <button
                   type="submit"
                   disabled={customState === "sending"}
-                  className="inline-flex w-full items-center justify-center rounded-xl bg-stone-900 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-stone-800 disabled:opacity-60"
+                  className="services-submit services-submit-alt"
                 >
                   {customState === "sending" ? "Submitting…" : "Submit request"}
                 </button>
                 {customMessage ? (
                   <p
-                    className={
-                      "text-sm " +
-                      (customState === "success"
-                        ? "text-emerald-800"
-                        : "text-stone-700")
-                    }
+                    className="services-status"
                     role={customState === "error" ? "alert" : undefined}
                   >
                     {customMessage}
@@ -497,35 +480,31 @@ export default function Services() {
       </section>
 
       {/* Training highlight */}
-      <section className="bg-white">
-        <div className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-          <div className="max-w-3xl">
-            <h2 className="text-2xl font-semibold tracking-tight text-stone-900 sm:text-3xl">
-              Hands-on training workshops
-            </h2>
-            <p className="mt-4 text-base leading-7 text-stone-600">
+      <section className="services-page-section services-highlight-section">
+        <div className="services-page-wrap">
+          <div className="services-page-head reveal">
+            <p className="section-eyebrow">Training</p>
+            <h2 className="section-title">Hands-on training workshops</h2>
+            <p className="section-desc">
               Our training programs are designed to be practical and
               interactive—ideal for teams exploring sustainable material
               development.
             </p>
           </div>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-2">
+          <div className="services-topic-grid">
             {[
               "Natural fiber composites",
               "Agro waste manufacturing",
               "Eco material design",
               "3D printing with natural fibers",
             ].map((topic) => (
-              <div
-                key={topic}
-                className="rounded-2xl border border-stone-200 bg-stone-50 p-5"
-              >
-                <p className="text-sm font-semibold text-stone-900">{topic}</p>
-                <p className="mt-2 text-sm leading-6 text-stone-600">
+              <div key={topic} className="services-topic-card reveal">
+                <p>{topic}</p>
+                <span>
                   Structured sessions covering concepts, process basics, and
                   practical workflows.
-                </p>
+                </span>
               </div>
             ))}
           </div>
@@ -533,34 +512,27 @@ export default function Services() {
       </section>
 
       {/* CTA */}
-      <section className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-        <div className="overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-sm">
-          <div className="bg-linear-to-r from-emerald-50 via-white to-stone-50 p-8 sm:p-10">
-            <div className="grid items-center gap-8 lg:grid-cols-2">
-              <div>
-                <h2 className="text-2xl font-semibold tracking-tight text-stone-900 sm:text-3xl">
-                  Let’s work together.
-                </h2>
-                <p className="mt-4 text-base leading-7 text-stone-600">
-                  Tell us your product goal and constraints. We’ll suggest the
-                  best service path—development, collaboration, training, or
-                  consultancy.
-                </p>
-              </div>
-              <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
-                <Link
-                  to="/contact"
-                  className="inline-flex items-center justify-center rounded-xl bg-emerald-700 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800"
-                >
-                  Contact Us
-                </Link>
-                <a
-                  href="mailto:info@hanriaecotech.com?subject=Services%20Inquiry%20%E2%80%94%20HanRia%20Eco%20Tech"
-                  className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-semibold text-stone-800 hover:bg-stone-50"
-                >
-                  Email Us
-                </a>
-              </div>
+      <section className="services-page-section services-cta-shell">
+        <div className="services-page-wrap">
+          <div className="services-cta-card reveal">
+            <div className="services-cta-copy">
+              <h2>Let’s work together.</h2>
+              <p>
+                Tell us your product goal and constraints. We’ll suggest the
+                best service path—development, collaboration, training, or
+                consultancy.
+              </p>
+            </div>
+            <div className="services-cta-actions">
+              <Link to="/contact" className="btn-forest">
+                Contact Us
+              </Link>
+              <a
+                href="mailto:info@hanriaecotech.com?subject=Services%20Inquiry%20%E2%80%94%20HanRia%20Eco%20Tech"
+                className="btn-outline-forest"
+              >
+                Email Us
+              </a>
             </div>
           </div>
         </div>

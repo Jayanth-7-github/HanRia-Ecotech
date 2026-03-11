@@ -86,22 +86,19 @@ function ProgramIcon({ name }) {
 
 function ProgramCard({ icon, title, description, bullets }) {
   return (
-    <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-      <div className="flex items-start gap-3">
-        <div className="rounded-xl bg-emerald-50 p-2">
+    <div className="training-detail-card reveal">
+      <div className="training-detail-row">
+        <div className="training-detail-icon">
           <ProgramIcon name={icon} />
         </div>
-        <div className="min-w-0">
-          <h2 className="text-base font-semibold text-stone-900">{title}</h2>
-          <p className="mt-2 text-sm leading-6 text-stone-600">{description}</p>
-          <ul className="mt-4 space-y-2 text-sm text-stone-600">
+        <div className="training-detail-copy">
+          <h2>{title}</h2>
+          <p>{description}</p>
+          <ul className="training-detail-list">
             {bullets.map((item) => (
-              <li key={item} className="flex gap-2">
-                <span
-                  className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-600"
-                  aria-hidden="true"
-                />
-                <span className="leading-6">{item}</span>
+              <li key={item} className="training-detail-item">
+                <span className="training-detail-dot" aria-hidden="true" />
+                <span>{item}</span>
               </li>
             ))}
           </ul>
@@ -168,22 +165,19 @@ function FormatIcon({ name }) {
 
 function FormatCard({ icon, title, description, bullets }) {
   return (
-    <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-      <div className="flex items-start gap-3">
-        <div className="rounded-xl bg-emerald-50 p-2">
+    <div className="training-detail-card reveal">
+      <div className="training-detail-row">
+        <div className="training-detail-icon">
           <FormatIcon name={icon} />
         </div>
-        <div className="min-w-0">
-          <h2 className="text-base font-semibold text-stone-900">{title}</h2>
-          <p className="mt-2 text-sm leading-6 text-stone-600">{description}</p>
-          <ul className="mt-4 space-y-2 text-sm text-stone-600">
+        <div className="training-detail-copy">
+          <h2>{title}</h2>
+          <p>{description}</p>
+          <ul className="training-detail-list">
             {bullets.map((item) => (
-              <li key={item} className="flex gap-2">
-                <span
-                  className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-600"
-                  aria-hidden="true"
-                />
-                <span className="leading-6">{item}</span>
+              <li key={item} className="training-detail-item">
+                <span className="training-detail-dot" aria-hidden="true" />
+                <span>{item}</span>
               </li>
             ))}
           </ul>
@@ -353,43 +347,34 @@ export default function Training() {
   return (
     <main>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-white">
-        <div className="absolute inset-0 bg-linear-to-b from-emerald-50 via-white to-stone-50" />
-        <div className="relative mx-auto max-w-6xl px-6 py-16 sm:py-20">
-          <div className="max-w-3xl">
-            <p className="text-xs font-semibold uppercase tracking-wide text-emerald-800">
-              Training
-            </p>
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight text-stone-900 sm:text-5xl">
+      <section className="training">
+        <div className="training-page-wrap">
+          <div className="training-hero-copy">
+            <p className="section-eyebrow">Training</p>
+            <h1 className="section-title">
               Sustainable Product Development Training
             </h1>
-            <p className="mt-4 text-base leading-7 text-stone-600 sm:text-lg">
+            <p className="section-desc">
               Educational programs focused on sustainable materials—built for
               learners and teams who want practical skills and modern eco-tech
               workflows.
             </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="training-hero-actions">
               <a
                 href="mailto:info@hanriaecotech.com?subject=Apply%20for%20Training"
-                className="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700"
+                className="btn-forest"
               >
                 Apply for Training
               </a>
-              <Link
-                to="/contact"
-                className="inline-flex items-center justify-center rounded-xl border border-emerald-600 bg-white px-5 py-3 text-sm font-semibold text-emerald-800 shadow-sm transition-colors hover:bg-emerald-50"
-              >
+              <Link to="/contact" className="btn-outline-forest">
                 Talk to our team
               </Link>
             </div>
 
-            <div className="mt-10 grid gap-3 sm:grid-cols-3">
+            <div className="training-tag-grid">
               {["Practical", "Eco-tech focused", "Partner-ready"].map((tag) => (
-                <div
-                  key={tag}
-                  className="rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-sm font-medium text-emerald-900"
-                >
+                <div key={tag} className="training-tag">
                   {tag}
                 </div>
               ))}
@@ -399,80 +384,84 @@ export default function Training() {
       </section>
 
       {/* Formats */}
-      <section className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-        <div className="max-w-3xl">
-          <h2 className="text-2xl font-semibold tracking-tight text-stone-900 sm:text-3xl">
-            Training formats
-          </h2>
-          <p className="mt-4 text-base leading-7 text-stone-600">
-            Choose a format that matches your team and timeline—we can tailor
-            the learning path based on your goals.
-          </p>
-        </div>
-        <div className="mt-10 grid gap-5 lg:grid-cols-3">
-          {formats.map((format) => (
-            <FormatCard
-              key={format.title}
-              icon={format.icon}
-              title={format.title}
-              description={format.description}
-              bullets={format.bullets}
-            />
-          ))}
+      <section className="training-page-section">
+        <div className="training-page-wrap">
+          <div className="training-section-head reveal">
+            <p className="section-eyebrow">Formats</p>
+            <h2 className="section-title">Training formats</h2>
+            <p className="section-desc">
+              Choose a format that matches your team and timeline—we can tailor
+              the learning path based on your goals.
+            </p>
+          </div>
+          <div className="training-format-grid">
+            {formats.map((format) => (
+              <FormatCard
+                key={format.title}
+                icon={format.icon}
+                title={format.title}
+                description={format.description}
+                bullets={format.bullets}
+              />
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Programs */}
-      <section className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-        <div className="max-w-3xl">
-          <h2 className="text-2xl font-semibold tracking-tight text-stone-900 sm:text-3xl">
-            Programs
-          </h2>
-          <p className="mt-4 text-base leading-7 text-stone-600">
-            Choose a track to build hands-on knowledge across natural fibers,
-            agro-waste processing, sustainable engineering, and additive
-            manufacturing.
-          </p>
-        </div>
+      <section className="training-page-section training-programs-section">
+        <div className="training-page-wrap">
+          <div className="training-section-head reveal">
+            <p className="section-eyebrow">Programs</p>
+            <h2 className="section-title">Programs</h2>
+            <p className="section-desc">
+              Choose a track to build hands-on knowledge across natural fibers,
+              agro-waste processing, sustainable engineering, and additive
+              manufacturing.
+            </p>
+          </div>
 
-        <div className="mt-10 grid gap-5 md:grid-cols-2">
-          {programs.map((program) => (
-            <ProgramCard
-              key={program.title}
-              icon={program.icon}
-              title={program.title}
-              description={program.description}
-              bullets={program.bullets}
-            />
-          ))}
+          <div className="training-program-grid">
+            {programs.map((program) => (
+              <ProgramCard
+                key={program.title}
+                icon={program.icon}
+                title={program.title}
+                description={program.description}
+                bullets={program.bullets}
+              />
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Registration */}
-      <section className="mx-auto max-w-6xl px-6 pb-16 sm:pb-20">
-        <div className="overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-sm">
-          <div className="bg-linear-to-r from-emerald-50 via-white to-stone-50 p-8 sm:p-10">
-            <div className="grid gap-8 lg:grid-cols-2">
-              <div>
-                <h2 className="text-2xl font-semibold tracking-tight text-stone-900 sm:text-3xl">
-                  Register for a program
-                </h2>
-                <p className="mt-4 text-base leading-7 text-stone-600">
+      <section className="training-page-section training-register-shell">
+        <div className="training-page-wrap">
+          <div className="training-register-card reveal">
+            <div className="training-register-grid">
+              <div className="training-register-copy">
+                <p className="section-eyebrow">Registration</p>
+                <h2 className="section-title">Register for a program</h2>
+                <p className="section-desc">
                   Submit your details and we’ll confirm schedule and next steps.
                 </p>
                 {apiPrograms.length === 0 ? (
-                  <p className="mt-4 text-sm text-stone-600">
+                  <p className="training-register-note">
                     Admin hasn’t published training programs yet.
                   </p>
                 ) : null}
               </div>
 
-              <form className="space-y-3" onSubmit={onRegisterSubmit}>
+              <form
+                className="training-register-form"
+                onSubmit={onRegisterSubmit}
+              >
                 <select
                   name="program_id"
                   value={registerForm.program_id}
                   onChange={onRegisterChange}
-                  className="w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm"
+                  className="training-field"
                 >
                   <option value="">Select program</option>
                   {apiPrograms.map((p) => (
@@ -486,7 +475,7 @@ export default function Training() {
                   value={registerForm.name}
                   onChange={onRegisterChange}
                   placeholder="Name"
-                  className="w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm"
+                  className="training-field"
                 />
                 <input
                   name="email"
@@ -494,22 +483,22 @@ export default function Training() {
                   value={registerForm.email}
                   onChange={onRegisterChange}
                   placeholder="Email"
-                  className="w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm"
+                  className="training-field"
                 />
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="training-register-inline">
                   <input
                     name="phone"
                     value={registerForm.phone}
                     onChange={onRegisterChange}
                     placeholder="Phone"
-                    className="w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm"
+                    className="training-field"
                   />
                   <input
                     name="institution"
                     value={registerForm.institution}
                     onChange={onRegisterChange}
                     placeholder="Institution"
-                    className="w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm"
+                    className="training-field"
                   />
                 </div>
 
@@ -518,19 +507,14 @@ export default function Training() {
                   disabled={
                     registerState === "sending" || apiPrograms.length === 0
                   }
-                  className="inline-flex w-full items-center justify-center rounded-xl bg-emerald-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="training-submit"
                 >
                   {registerState === "sending" ? "Submitting…" : "Register"}
                 </button>
 
                 {registerMessage ? (
                   <p
-                    className={
-                      "text-sm " +
-                      (registerState === "success"
-                        ? "text-emerald-800"
-                        : "text-stone-700")
-                    }
+                    className="training-status"
                     role={registerState === "error" ? "alert" : undefined}
                   >
                     {registerMessage}
@@ -543,19 +527,18 @@ export default function Training() {
       </section>
 
       {/* Outcomes */}
-      <section className="bg-white">
-        <div className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-          <div className="max-w-3xl">
-            <h2 className="text-2xl font-semibold tracking-tight text-stone-900 sm:text-3xl">
-              What you’ll gain
-            </h2>
-            <p className="mt-4 text-base leading-7 text-stone-600">
+      <section className="training-page-section">
+        <div className="training-page-wrap">
+          <div className="training-section-head reveal">
+            <p className="section-eyebrow">Outcomes</p>
+            <h2 className="section-title">What you’ll gain</h2>
+            <p className="section-desc">
               Clear fundamentals plus practical workflows you can reuse in your
               projects.
             </p>
           </div>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="training-info-grid training-info-grid-3">
             {[
               {
                 title: "Material-first thinking",
@@ -573,57 +556,44 @@ export default function Training() {
                   "Learn how to plan experiments, validate outcomes, and iterate with confidence.",
               },
             ].map((item) => (
-              <div
-                key={item.title}
-                className="rounded-2xl border border-stone-200 bg-stone-50 p-5"
-              >
-                <p className="text-sm font-semibold text-stone-900">
-                  {item.title}
-                </p>
-                <p className="mt-2 text-sm leading-6 text-stone-600">
-                  {item.description}
-                </p>
-              </div>
+              <article key={item.title} className="training-info-card reveal">
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
       {/* Who can attend */}
-      <section className="bg-white">
-        <div className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-          <div className="max-w-3xl">
-            <h2 className="text-2xl font-semibold tracking-tight text-stone-900 sm:text-3xl">
-              Who can attend
-            </h2>
-            <p className="mt-4 text-base leading-7 text-stone-600">
+      <section className="training-page-section training-audience-section">
+        <div className="training-page-wrap">
+          <div className="training-section-head reveal">
+            <p className="section-eyebrow">Audience</p>
+            <h2 className="section-title">Who can attend</h2>
+            <p className="section-desc">
               Our programs are designed for a range of learners—from beginners
               to teams building sustainable products.
             </p>
           </div>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="training-info-grid training-info-grid-4">
             {["Students", "Engineers", "Startups", "Researchers"].map(
               (audience) => (
-                <div
-                  key={audience}
-                  className="rounded-2xl border border-stone-200 bg-stone-50 p-5"
-                >
-                  <p className="text-sm font-semibold text-stone-900">
-                    {audience}
-                  </p>
-                  <p className="mt-2 text-sm leading-6 text-stone-600">
+                <article key={audience} className="training-info-card reveal">
+                  <h3>{audience}</h3>
+                  <p>
                     A clear learning path with practical examples and outcomes.
                   </p>
-                </div>
+                </article>
               ),
             )}
           </div>
 
-          <div className="mt-10">
+          <div className="training-audience-action">
             <a
               href="mailto:info@hanriaecotech.com?subject=Apply%20for%20Training"
-              className="inline-flex items-center justify-center rounded-xl border border-emerald-600 bg-white px-5 py-3 text-sm font-semibold text-emerald-800 shadow-sm transition-colors hover:bg-emerald-50"
+              className="btn-outline-forest"
             >
               Apply for Training
             </a>
@@ -632,28 +602,27 @@ export default function Training() {
       </section>
 
       {/* CTA */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-linear-to-br from-emerald-950 via-emerald-900 to-stone-950" />
-        <div className="relative mx-auto max-w-6xl px-6 py-16 sm:py-20">
-          <div className="max-w-3xl">
-            <h2 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+      <section className="training-dark-cta">
+        <div className="training-page-wrap training-dark-cta-inner">
+          <div className="training-dark-cta-copy">
+            <p className="section-eyebrow training-dark-cta-eyebrow">
+              Get Started
+            </p>
+            <h2 className="section-title training-dark-cta-title">
               Ready to build with sustainable materials?
             </h2>
-            <p className="mt-4 text-base leading-7 text-emerald-50/90">
+            <p className="training-dark-cta-desc">
               Tell us what you want to learn. We’ll recommend the best program
               and format.
             </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="training-dark-cta-actions">
               <a
                 href="mailto:info@hanriaecotech.com?subject=Apply%20for%20Training"
-                className="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700"
+                className="btn-gold"
               >
                 Apply for Training
               </a>
-              <Link
-                to="/contact"
-                className="inline-flex items-center justify-center rounded-xl border border-emerald-200 bg-white/10 px-5 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-white/15"
-              >
+              <Link to="/contact" className="btn-ghost">
                 Contact us
               </Link>
             </div>

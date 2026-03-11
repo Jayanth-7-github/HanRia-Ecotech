@@ -41,6 +41,76 @@ async function apiFetch(path, { token, method = "GET", body, isForm } = {}) {
   return data;
 }
 
+function AdminBranding({
+  title,
+  titleClassName,
+  titleAs: TitleTag = "p",
+  eyebrowMargin = 6,
+  titleStyle,
+}) {
+  return (
+    <>
+      <p className="section-eyebrow" style={{ marginBottom: eyebrowMargin }}>
+        Admin
+      </p>
+      <TitleTag className={titleClassName} style={titleStyle}>
+        {title}
+      </TitleTag>
+    </>
+  );
+}
+
+function AdminActionButtons({
+  busy,
+  onRefresh,
+  onLogout,
+  containerClassName,
+  secondaryButtonClassName,
+  darkButtonClassName,
+}) {
+  return (
+    <div className={containerClassName}>
+      <button
+        type="button"
+        onClick={onRefresh}
+        disabled={busy}
+        className={secondaryButtonClassName}
+      >
+        Refresh
+      </button>
+      <button type="button" onClick={onLogout} className={darkButtonClassName}>
+        Logout
+      </button>
+    </div>
+  );
+}
+
+function AdminTabNavigation({
+  tabs,
+  busy,
+  onTabSelect,
+  tabButtonClassName,
+  className,
+}) {
+  return (
+    <nav className={className}>
+      <div className="admin-tab-list">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            disabled={busy}
+            onClick={() => onTabSelect(tab.id)}
+            className={tabButtonClassName(tab.id)}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+    </nav>
+  );
+}
+
 export default function Admin() {
   const [adminKey, setAdminKey] = useState("");
   const [token, setToken] = useState(() =>
@@ -577,251 +647,207 @@ export default function Admin() {
     { id: "newsletter", label: "Newsletter" },
   ];
 
+  const fieldClassName = "admin-input";
+  const textareaClassName = "admin-input admin-textarea";
+  const selectClassName = "admin-input admin-select";
+  const fileInputClassName = "admin-input admin-file-input";
+
+  const tabButtonClassName = (tabId) =>
+    `admin-tab-button${activeTab === tabId ? " is-active" : ""}`;
+
+  const primaryButtonClassName = "admin-btn admin-btn-primary";
+  const secondaryButtonClassName = "admin-btn admin-btn-secondary";
+  const darkButtonClassName = "admin-btn admin-btn-dark";
+  const inlineLinkClassName = "admin-inline-link";
+
   if (!token) {
     return (
-      <main className="mx-auto max-w-2xl px-6 py-16 sm:py-20">
-        <div className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8">
-          <h1 className="text-2xl font-semibold tracking-tight text-stone-900">
-            Admin Login
-          </h1>
-          <p className="mt-2 text-sm leading-6 text-stone-600">
-            Enter the admin key to access the dashboard.
-          </p>
-
-          <form className="mt-6 space-y-4" onSubmit={login}>
-            <div>
-              <label
-                className="text-sm font-medium text-stone-700"
-                htmlFor="key"
-              >
-                Admin Key
-              </label>
-              <input
-                id="key"
-                type="password"
-                value={adminKey}
-                onChange={(e) => setAdminKey(e.target.value)}
-                className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-emerald-600"
-                placeholder="Enter admin key"
-              />
+      <main className="admin-page admin-login-page">
+        <div className="admin-login-shell">
+          <div className="admin-login-card">
+            <div className="admin-login-card-head">
+              <p className="section-eyebrow">Admin</p>
+              <h1 className="section-title admin-login-title">
+                Dashboard Login
+              </h1>
+              <p className="section-desc admin-login-desc">
+                Enter the admin key to access the dashboard.
+              </p>
             </div>
 
-            <button
-              type="submit"
-              disabled={busy}
-              className="inline-flex w-full items-center justify-center rounded-xl bg-emerald-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800 disabled:opacity-60"
-            >
-              {busy ? "Signing in…" : "Sign in"}
-            </button>
+            <form className="admin-form admin-login-form" onSubmit={login}>
+              <div className="admin-field">
+                <label className="admin-label" htmlFor="key">
+                  Admin Key
+                </label>
+                <input
+                  id="key"
+                  type="password"
+                  value={adminKey}
+                  onChange={(e) => setAdminKey(e.target.value)}
+                  autoComplete="current-password"
+                  className={fieldClassName}
+                  placeholder="Enter admin key"
+                />
+              </div>
 
-            {status ? (
-              <p className="text-sm text-stone-700" role="alert">
-                {status}
-              </p>
-            ) : null}
-          </form>
+              <button
+                type="submit"
+                disabled={busy}
+                className={`${primaryButtonClassName} admin-login-submit`}
+              >
+                {busy ? "Signing in…" : "Sign in"}
+              </button>
+
+              {status ? (
+                <p className="admin-status-copy" role="alert">
+                  {status}
+                </p>
+              ) : null}
+            </form>
+          </div>
         </div>
       </main>
     );
   }
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-10">
-      <div className="lg:flex lg:gap-6">
+    <main className="admin-page admin-dashboard-page">
+      <div className="admin-dashboard-shell">
         {sidebarOpen ? (
-          <div
-            className="fixed inset-0 z-40 lg:hidden"
-            role="dialog"
-            aria-modal="true"
-          >
+          <div className="admin-mobile-overlay" role="dialog" aria-modal="true">
             <button
               type="button"
-              className="absolute inset-0 bg-stone-900/40"
+              className="admin-mobile-overlay-backdrop"
               aria-label="Close navigation"
               onClick={() => setSidebarOpen(false)}
             />
-            <div className="absolute left-0 top-0 h-full w-72 bg-white shadow-xl">
-              <div className="flex items-center justify-between border-b border-stone-200 px-4 py-4">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-emerald-800">
-                    Admin
-                  </p>
-                  <p className="mt-1 text-sm font-semibold text-stone-900">
-                    Dashboard
-                  </p>
+            <div className="admin-mobile-drawer">
+              <div className="admin-mobile-drawer-head">
+                <div className="admin-mobile-drawer-copy">
+                  <AdminBranding
+                    title="Dashboard"
+                    titleClassName="admin-sidebar-title"
+                    eyebrowMargin={4}
+                  />
                 </div>
                 <button
                   type="button"
-                  className="rounded-xl border border-stone-200 bg-white px-3 py-2 text-xs font-semibold text-stone-800 hover:bg-stone-50"
+                  className={secondaryButtonClassName}
                   onClick={() => setSidebarOpen(false)}
                 >
                   Close
                 </button>
               </div>
-              <nav className="p-3">
-                <div className="space-y-1">
-                  {tabs.map((t) => (
-                    <button
-                      key={t.id}
-                      type="button"
-                      disabled={busy}
-                      onClick={() => {
-                        setActiveTab(t.id);
-                        setSidebarOpen(false);
-                      }}
-                      className={
-                        "w-full rounded-xl px-3 py-2 text-left text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60 " +
-                        (activeTab === t.id
-                          ? "bg-emerald-700 text-white"
-                          : "text-stone-800 hover:bg-stone-50")
-                      }
-                    >
-                      {t.label}
-                    </button>
-                  ))}
-                </div>
-              </nav>
+              <AdminTabNavigation
+                tabs={tabs}
+                busy={busy}
+                onTabSelect={(tabId) => {
+                  setActiveTab(tabId);
+                  setSidebarOpen(false);
+                }}
+                tabButtonClassName={tabButtonClassName}
+                className="admin-sidebar-nav admin-sidebar-nav-mobile"
+              />
             </div>
           </div>
         ) : null}
 
-        <aside className="hidden lg:block lg:w-64">
-          <div className="sticky top-10 rounded-3xl border border-stone-200 bg-white p-4 shadow-sm">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-800">
-                Admin
-              </p>
-              <p className="mt-2 text-base font-semibold text-stone-900">
-                Dashboard
-              </p>
+        <aside className="admin-sidebar">
+          <div className="admin-sidebar-card">
+            <div className="admin-sidebar-head">
+              <AdminBranding
+                title="Dashboard"
+                titleClassName="admin-sidebar-title"
+              />
             </div>
-            <nav className="mt-4">
-              <div className="space-y-1">
-                {tabs.map((t) => (
-                  <button
-                    key={t.id}
-                    type="button"
-                    disabled={busy}
-                    onClick={() => setActiveTab(t.id)}
-                    className={
-                      "w-full rounded-xl px-3 py-2 text-left text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60 " +
-                      (activeTab === t.id
-                        ? "bg-emerald-700 text-white"
-                        : "text-stone-800 hover:bg-stone-50")
-                    }
-                  >
-                    {t.label}
-                  </button>
-                ))}
-              </div>
-            </nav>
+            <AdminTabNavigation
+              tabs={tabs}
+              busy={busy}
+              onTabSelect={setActiveTab}
+              tabButtonClassName={tabButtonClassName}
+              className="admin-sidebar-nav"
+            />
           </div>
         </aside>
 
-        <div className="min-w-0 flex-1">
-          <div className="flex items-start justify-between gap-3 lg:hidden">
+        <div className="admin-content">
+          <div className="admin-mobile-topbar">
             <button
               type="button"
               onClick={() => setSidebarOpen(true)}
               disabled={busy}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-stone-200 bg-white disabled:cursor-not-allowed disabled:opacity-60"
+              className="admin-menu-button"
               aria-label="Open navigation"
             >
-              <span className="flex flex-col gap-1">
-                <span className="block h-0.5 w-5 bg-stone-900" />
-                <span className="block h-0.5 w-5 bg-stone-900" />
-                <span className="block h-0.5 w-5 bg-stone-900" />
+              <span className="admin-menu-lines">
+                <span />
+                <span />
+                <span />
               </span>
             </button>
 
-            <div className="min-w-0 flex-1">
-              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-800">
-                Admin
-              </p>
-              <h1 className="mt-1 truncate text-xl font-semibold tracking-tight text-stone-900">
-                Dashboard
-              </h1>
+            <div className="admin-mobile-topbar-copy">
+              <AdminBranding
+                title="Dashboard"
+                titleClassName="admin-mobile-title"
+                titleAs="h1"
+                eyebrowMargin={4}
+              />
             </div>
 
-            <div className="flex shrink-0 gap-2">
-              <button
-                type="button"
-                onClick={() => refreshAll(token)}
-                disabled={busy}
-                className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-3 py-2 text-xs font-semibold text-stone-800 hover:bg-stone-50 disabled:opacity-60"
-              >
-                Refresh
-              </button>
-              <button
-                type="button"
-                onClick={logout}
-                className="inline-flex items-center justify-center rounded-xl bg-stone-900 px-3 py-2 text-xs font-semibold text-white hover:bg-stone-800"
-              >
-                Logout
-              </button>
-            </div>
+            <AdminActionButtons
+              busy={busy}
+              onRefresh={() => refreshAll(token)}
+              onLogout={logout}
+              containerClassName="admin-topbar-actions"
+              secondaryButtonClassName={secondaryButtonClassName}
+              darkButtonClassName={darkButtonClassName}
+            />
           </div>
 
-          <div className="mt-4 hidden flex-col gap-4 sm:flex-row sm:items-center sm:justify-between lg:flex">
+          <div className="admin-header">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-800">
-                Admin
-              </p>
-              <h1 className="mt-2 text-2xl font-semibold tracking-tight text-stone-900 sm:text-3xl">
-                Dashboard
-              </h1>
+              <AdminBranding
+                title="Dashboard"
+                titleClassName="section-title"
+                titleAs="h1"
+                titleStyle={{ fontSize: "2.2rem", marginBottom: 0 }}
+              />
             </div>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => refreshAll(token)}
-                disabled={busy}
-                className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-4 py-2 text-sm font-semibold text-stone-800 hover:bg-stone-50 disabled:opacity-60"
-              >
-                Refresh
-              </button>
-              <button
-                type="button"
-                onClick={logout}
-                className="inline-flex items-center justify-center rounded-xl bg-stone-900 px-4 py-2 text-sm font-semibold text-white hover:bg-stone-800"
-              >
-                Logout
-              </button>
-            </div>
+            <AdminActionButtons
+              busy={busy}
+              onRefresh={() => refreshAll(token)}
+              onLogout={logout}
+              containerClassName="admin-header-actions"
+              secondaryButtonClassName={secondaryButtonClassName}
+              darkButtonClassName={darkButtonClassName}
+            />
           </div>
 
           {status ? (
-            <div
-              className="mt-4 rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm text-stone-700"
-              role="status"
-            >
+            <div className="admin-status-banner" role="status">
               {status}
             </div>
           ) : null}
 
-          <section className="mt-6 rounded-3xl border border-stone-200 bg-white p-6 shadow-sm">
+          <section className="admin-workspace">
             {activeTab === "products" ? (
-              <div className="grid gap-8 lg:grid-cols-2">
-                <div>
-                  <h2 className="text-base font-semibold text-stone-900">
+              <div className="admin-grid-2">
+                <div className="admin-panel-card">
+                  <h2 className="admin-section-title">
                     {editingProductId ? "Edit product" : "Add product"}
                   </h2>
-                  <form className="mt-4 space-y-4" onSubmit={saveProduct}>
-                    <fieldset
-                      disabled={busy}
-                      className="space-y-4 disabled:opacity-75"
-                    >
-                      <div>
-                        <label
-                          className="text-sm font-medium text-stone-700"
-                          htmlFor="product_name"
-                        >
+                  <form className="admin-form" onSubmit={saveProduct}>
+                    <fieldset disabled={busy} className="admin-fieldset">
+                      <div className="admin-field">
+                        <label className="admin-label" htmlFor="product_name">
                           Product name
                         </label>
                         <input
                           id="product_name"
                           required
-                          className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-emerald-600"
+                          className={fieldClassName}
                           placeholder="e.g., Bio Composite Panel"
                           value={productDraft.name}
                           onChange={(e) =>
@@ -833,9 +859,9 @@ export default function Admin() {
                         />
                       </div>
 
-                      <div>
+                      <div className="admin-field">
                         <label
-                          className="text-sm font-medium text-stone-700"
+                          className="admin-label"
                           htmlFor="product_category"
                         >
                           Category
@@ -843,7 +869,7 @@ export default function Admin() {
                         <select
                           id="product_category"
                           required
-                          className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none focus:border-emerald-600"
+                          className={selectClassName}
                           value={productDraft.category}
                           onChange={(e) =>
                             setProductDraft((p) => ({
@@ -864,22 +890,22 @@ export default function Admin() {
                           ))}
                         </select>
                         {!editingProductId && categories.length === 0 ? (
-                          <p className="mt-2 text-xs text-stone-600">
+                          <p className="admin-field-help">
                             Add a category first in the Categories tab.
                           </p>
                         ) : null}
                       </div>
 
-                      <div>
+                      <div className="admin-field">
                         <label
-                          className="text-sm font-medium text-stone-700"
+                          className="admin-label"
                           htmlFor="product_description"
                         >
                           Description
                         </label>
                         <textarea
                           id="product_description"
-                          className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-emerald-600"
+                          className={textareaClassName}
                           rows={4}
                           placeholder="Short overview for the products page"
                           value={productDraft.description}
@@ -892,25 +918,23 @@ export default function Admin() {
                         />
                       </div>
 
-                      <div>
-                        <p className="text-sm font-medium text-stone-700">
-                          Assets
-                        </p>
-                        <p className="mt-1 text-xs text-stone-600">
+                      <div className="admin-field">
+                        <p className="admin-label">Assets</p>
+                        <p className="admin-field-help">
                           Upload an image / document or paste an existing URL.
                         </p>
 
-                        <div className="mt-3 grid gap-4 sm:grid-cols-2">
-                          <div>
+                        <div className="admin-subgrid-2 admin-subgrid-padded">
+                          <div className="admin-field">
                             <label
-                              className="text-sm font-medium text-stone-700"
+                              className="admin-label"
                               htmlFor="product_image_url"
                             >
                               Image URL
                             </label>
                             <input
                               id="product_image_url"
-                              className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-emerald-600"
+                              className={fieldClassName}
                               placeholder="https://..."
                               value={productDraft.image}
                               onChange={(e) =>
@@ -921,7 +945,7 @@ export default function Admin() {
                               }
                             />
                             <input
-                              className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm"
+                              className={fileInputClassName}
                               type="file"
                               accept="image/*"
                               onChange={(e) =>
@@ -929,27 +953,27 @@ export default function Admin() {
                               }
                             />
                             {productDraft.image ? (
-                              <div className="mt-2 overflow-hidden rounded-xl border border-stone-200 bg-stone-50">
+                              <div className="admin-preview-card">
                                 <img
                                   src={productDraft.image}
                                   alt="Product preview"
-                                  className="h-32 w-full object-contain"
+                                  className="admin-preview-image"
                                   loading="lazy"
                                 />
                               </div>
                             ) : null}
                           </div>
 
-                          <div>
+                          <div className="admin-field">
                             <label
-                              className="text-sm font-medium text-stone-700"
+                              className="admin-label"
                               htmlFor="product_document_url"
                             >
                               Document URL
                             </label>
                             <input
                               id="product_document_url"
-                              className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-emerald-600"
+                              className={fieldClassName}
                               placeholder="https://..."
                               value={productDraft.document}
                               onChange={(e) =>
@@ -960,7 +984,7 @@ export default function Admin() {
                               }
                             />
                             <input
-                              className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm"
+                              className={fileInputClassName}
                               type="file"
                               onChange={(e) =>
                                 uploadProductAsset(
@@ -971,7 +995,7 @@ export default function Admin() {
                             />
                             {productDraft.document ? (
                               <a
-                                className="mt-2 inline-flex text-sm font-semibold text-emerald-800 hover:text-emerald-900"
+                                className={inlineLinkClassName}
                                 href={productDraft.document}
                                 target="_blank"
                                 rel="noreferrer"
@@ -983,17 +1007,17 @@ export default function Admin() {
                         </div>
                       </div>
 
-                      <div className="grid gap-4 sm:grid-cols-2">
-                        <div>
+                      <div className="admin-subgrid-2">
+                        <div className="admin-field">
                           <label
-                            className="text-sm font-medium text-stone-700"
+                            className="admin-label"
                             htmlFor="product_applications"
                           >
                             Applications
                           </label>
                           <input
                             id="product_applications"
-                            className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-emerald-600"
+                            className={fieldClassName}
                             placeholder="comma-separated"
                             value={productDraft.applicationsText}
                             onChange={(e) =>
@@ -1005,16 +1029,16 @@ export default function Admin() {
                           />
                         </div>
 
-                        <div>
+                        <div className="admin-field">
                           <label
-                            className="text-sm font-medium text-stone-700"
+                            className="admin-label"
                             htmlFor="product_materials"
                           >
                             Materials
                           </label>
                           <input
                             id="product_materials"
-                            className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-emerald-600"
+                            className={fieldClassName}
                             placeholder="comma-separated"
                             value={productDraft.materialsText}
                             onChange={(e) =>
@@ -1028,13 +1052,13 @@ export default function Admin() {
                       </div>
                     </fieldset>
 
-                    <div className="flex gap-2">
+                    <div className="admin-action-row">
                       <button
                         type="submit"
                         disabled={
                           busy || (!editingProductId && categories.length === 0)
                         }
-                        className="inline-flex items-center justify-center rounded-xl bg-emerald-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-60"
+                        className={primaryButtonClassName}
                       >
                         {busy
                           ? editingProductId
@@ -1052,7 +1076,7 @@ export default function Admin() {
                             setEditingProductId(null);
                             setProductDraft(productEmpty);
                           }}
-                          className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-sm font-semibold text-stone-800 hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-60"
+                          className={secondaryButtonClassName}
                         >
                           Cancel
                         </button>
@@ -1061,55 +1085,46 @@ export default function Admin() {
                   </form>
                 </div>
 
-                <div>
-                  <h2 className="text-base font-semibold text-stone-900">
-                    Products
-                  </h2>
+                <div className="admin-panel-card">
+                  <h2 className="admin-section-title">Products</h2>
                   {products.length === 0 ? (
-                    <p className="mt-4 text-sm text-stone-600">
-                      No products yet.
-                    </p>
+                    <p className="admin-empty">No products yet.</p>
                   ) : (
-                    <div className="mt-4 overflow-hidden rounded-2xl border border-stone-200">
+                    <div className="admin-list">
                       {products.map((p, idx) => (
                         <div
                           key={p._id}
-                          className={
-                            "p-4 " +
-                            (idx === 0 ? "" : "border-t border-stone-200")
-                          }
+                          className={`admin-list-item${idx === 0 ? "" : " admin-list-item-bordered"}`}
                         >
-                          <div className="flex items-start justify-between gap-4">
-                            <div className="flex min-w-0 gap-4">
+                          <div className="admin-record-row">
+                            <div className="admin-record-main admin-record-main-media">
                               {p.image ? (
-                                <div className="h-14 w-14 overflow-hidden rounded-xl border border-stone-200 bg-stone-50">
+                                <div className="admin-record-thumb">
                                   <img
                                     src={p.image}
                                     alt={p.name}
-                                    className="h-full w-full object-cover"
+                                    className="admin-record-thumb-image"
                                     loading="lazy"
                                   />
                                 </div>
                               ) : (
-                                <div className="h-14 w-14 rounded-xl border border-stone-200 bg-stone-50" />
+                                <div className="admin-record-thumb admin-record-thumb-placeholder" />
                               )}
-                              <div className="min-w-0">
-                                <p className="text-sm font-semibold text-stone-900">
-                                  {p.name}
-                                </p>
-                                <p className="mt-1 text-xs text-stone-600">
+                              <div className="admin-record-copy">
+                                <p className="admin-record-title">{p.name}</p>
+                                <p className="admin-record-meta">
                                   {p.category}
                                 </p>
                                 {p.description ? (
-                                  <p className="mt-2 text-sm text-stone-600">
+                                  <p className="admin-record-text">
                                     {p.description}
                                   </p>
                                 ) : null}
                                 {p.image || p.document ? (
-                                  <div className="mt-2 flex flex-wrap gap-3 text-xs">
+                                  <div className="admin-record-links">
                                     {p.image ? (
                                       <a
-                                        className="font-semibold text-emerald-800 hover:text-emerald-900"
+                                        className={inlineLinkClassName}
                                         href={p.image}
                                         target="_blank"
                                         rel="noreferrer"
@@ -1119,7 +1134,7 @@ export default function Admin() {
                                     ) : null}
                                     {p.document ? (
                                       <a
-                                        className="font-semibold text-emerald-800 hover:text-emerald-900"
+                                        className={inlineLinkClassName}
                                         href={p.document}
                                         target="_blank"
                                         rel="noreferrer"
@@ -1132,12 +1147,12 @@ export default function Admin() {
                               </div>
                             </div>
 
-                            <div className="flex shrink-0 gap-2">
+                            <div className="admin-item-actions">
                               <button
                                 type="button"
                                 disabled={busy}
                                 onClick={() => editProduct(p)}
-                                className="rounded-lg border border-stone-200 bg-white px-3 py-1.5 text-xs font-semibold text-stone-800 hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-60"
+                                className={secondaryButtonClassName}
                               >
                                 Edit
                               </button>
@@ -1145,7 +1160,7 @@ export default function Admin() {
                                 type="button"
                                 disabled={busy}
                                 onClick={() => deleteProduct(p._id)}
-                                className="rounded-lg bg-stone-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-stone-800 disabled:cursor-not-allowed disabled:opacity-60"
+                                className={darkButtonClassName}
                               >
                                 Delete
                               </button>
@@ -1160,26 +1175,18 @@ export default function Admin() {
             ) : null}
 
             {activeTab === "categories" ? (
-              <div className="grid gap-8 lg:grid-cols-2">
-                <div>
-                  <h2 className="text-base font-semibold text-stone-900">
-                    Add category
-                  </h2>
-                  <form className="mt-4 space-y-4" onSubmit={addCategory}>
-                    <fieldset
-                      disabled={busy}
-                      className="space-y-4 disabled:opacity-75"
-                    >
-                      <div>
-                        <label
-                          className="text-sm font-medium text-stone-700"
-                          htmlFor="category_name"
-                        >
+              <div className="admin-grid-2">
+                <div className="admin-panel-card">
+                  <h2 className="admin-section-title">Add category</h2>
+                  <form className="admin-form" onSubmit={addCategory}>
+                    <fieldset disabled={busy} className="admin-fieldset">
+                      <div className="admin-field">
+                        <label className="admin-label" htmlFor="category_name">
                           Category name
                         </label>
                         <input
                           id="category_name"
-                          className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-emerald-600"
+                          className={fieldClassName}
                           placeholder="e.g., Packaging"
                           value={categoryDraft.category_name}
                           onChange={(e) =>
@@ -1191,16 +1198,16 @@ export default function Admin() {
                         />
                       </div>
 
-                      <div>
+                      <div className="admin-field">
                         <label
-                          className="text-sm font-medium text-stone-700"
+                          className="admin-label"
                           htmlFor="category_description"
                         >
                           Description
                         </label>
                         <textarea
                           id="category_description"
-                          className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-emerald-600"
+                          className={textareaClassName}
                           rows={4}
                           placeholder="Optional summary"
                           value={categoryDraft.description}
@@ -1217,41 +1224,34 @@ export default function Admin() {
                     <button
                       type="submit"
                       disabled={busy}
-                      className="inline-flex items-center justify-center rounded-xl bg-emerald-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-60"
+                      className={primaryButtonClassName}
                     >
                       {busy ? "Creating…" : "Create"}
                     </button>
                   </form>
                 </div>
-                <div>
-                  <h2 className="text-base font-semibold text-stone-900">
-                    Categories
-                  </h2>
+                <div className="admin-panel-card">
+                  <h2 className="admin-section-title">Categories</h2>
                   {categories.length === 0 ? (
-                    <p className="mt-4 text-sm text-stone-600">
-                      No categories yet.
-                    </p>
+                    <p className="admin-empty">No categories yet.</p>
                   ) : (
-                    <div className="mt-4 overflow-hidden rounded-2xl border border-stone-200">
+                    <div className="admin-list">
                       {categories.map((c, idx) => (
                         <div
                           key={c._id}
-                          className={
-                            "p-4 " +
-                            (idx === 0 ? "" : "border-t border-stone-200")
-                          }
+                          className={`admin-list-item${idx === 0 ? "" : " admin-list-item-bordered"}`}
                         >
-                          <div className="flex items-start justify-between gap-4">
-                            <div className="min-w-0">
-                              <p className="text-sm font-semibold text-stone-900">
+                          <div className="admin-record-row">
+                            <div className="admin-record-copy">
+                              <p className="admin-record-title">
                                 {c.category_name}
                               </p>
                               {c.description ? (
-                                <p className="mt-2 text-sm text-stone-600">
+                                <p className="admin-record-text">
                                   {c.description}
                                 </p>
                               ) : (
-                                <p className="mt-2 text-sm text-stone-500">
+                                <p className="admin-record-muted">
                                   No description.
                                 </p>
                               )}
@@ -1260,7 +1260,7 @@ export default function Admin() {
                               type="button"
                               disabled={busy}
                               onClick={() => deleteCategory(c._id)}
-                              className="rounded-lg bg-stone-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-stone-800 disabled:cursor-not-allowed disabled:opacity-60"
+                              className={darkButtonClassName}
                             >
                               Delete
                             </button>
@@ -1274,26 +1274,20 @@ export default function Admin() {
             ) : null}
 
             {activeTab === "services" ? (
-              <div className="grid gap-8 lg:grid-cols-2">
-                <div>
-                  <h2 className="text-base font-semibold text-stone-900">
+              <div className="admin-grid-2">
+                <div className="admin-panel-card">
+                  <h2 className="admin-section-title">
                     {editingServiceId ? "Edit service" : "Add service"}
                   </h2>
-                  <form className="mt-4 space-y-4" onSubmit={saveService}>
-                    <fieldset
-                      disabled={busy}
-                      className="space-y-4 disabled:opacity-75"
-                    >
-                      <div>
-                        <label
-                          className="text-sm font-medium text-stone-700"
-                          htmlFor="service_title"
-                        >
+                  <form className="admin-form" onSubmit={saveService}>
+                    <fieldset disabled={busy} className="admin-fieldset">
+                      <div className="admin-field">
+                        <label className="admin-label" htmlFor="service_title">
                           Title
                         </label>
                         <input
                           id="service_title"
-                          className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-emerald-600"
+                          className={fieldClassName}
                           placeholder="e.g., Product Development"
                           value={serviceDraft.title}
                           onChange={(e) =>
@@ -1305,16 +1299,16 @@ export default function Admin() {
                         />
                       </div>
 
-                      <div>
+                      <div className="admin-field">
                         <label
-                          className="text-sm font-medium text-stone-700"
+                          className="admin-label"
                           htmlFor="service_description"
                         >
                           Description
                         </label>
                         <textarea
                           id="service_description"
-                          className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-emerald-600"
+                          className={textareaClassName}
                           rows={4}
                           placeholder="What this service includes"
                           value={serviceDraft.description}
@@ -1328,11 +1322,11 @@ export default function Admin() {
                       </div>
                     </fieldset>
 
-                    <div className="flex gap-2">
+                    <div className="admin-action-row">
                       <button
                         type="submit"
                         disabled={busy}
-                        className="inline-flex items-center justify-center rounded-xl bg-emerald-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-60"
+                        className={primaryButtonClassName}
                       >
                         {busy
                           ? editingServiceId
@@ -1350,7 +1344,7 @@ export default function Admin() {
                             setEditingServiceId(null);
                             setServiceDraft(serviceEmpty);
                           }}
-                          className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-sm font-semibold text-stone-800 hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-60"
+                          className={secondaryButtonClassName}
                         >
                           Cancel
                         </button>
@@ -1358,45 +1352,36 @@ export default function Admin() {
                     </div>
                   </form>
                 </div>
-                <div>
-                  <h2 className="text-base font-semibold text-stone-900">
-                    Services
-                  </h2>
+                <div className="admin-panel-card">
+                  <h2 className="admin-section-title">Services</h2>
                   {services.length === 0 ? (
-                    <p className="mt-4 text-sm text-stone-600">
-                      No services yet.
-                    </p>
+                    <p className="admin-empty">No services yet.</p>
                   ) : (
-                    <div className="mt-4 overflow-hidden rounded-2xl border border-stone-200">
+                    <div className="admin-list">
                       {services.map((s, idx) => (
                         <div
                           key={s._id}
-                          className={
-                            "p-4 " +
-                            (idx === 0 ? "" : "border-t border-stone-200")
-                          }
+                          className={`admin-list-item${idx === 0 ? "" : " admin-list-item-bordered"}`}
                         >
-                          <div className="flex items-start justify-between gap-4">
-                            <div className="min-w-0">
-                              <p className="text-sm font-semibold text-stone-900">
-                                {s.title}
-                              </p>
+                          <div className="admin-record-row">
+                            <div className="admin-record-copy">
+                              <p className="admin-record-title">{s.title}</p>
                               {s.description ? (
-                                <p className="mt-2 text-sm text-stone-600">
+                                <p className="admin-record-text">
                                   {s.description}
                                 </p>
                               ) : (
-                                <p className="mt-2 text-sm text-stone-500">
+                                <p className="admin-record-muted">
                                   No description.
                                 </p>
                               )}
                             </div>
-                            <div className="flex shrink-0 gap-2">
+                            <div className="admin-item-actions">
                               <button
                                 type="button"
                                 disabled={busy}
                                 onClick={() => editService(s)}
-                                className="rounded-lg border border-stone-200 bg-white px-3 py-1.5 text-xs font-semibold text-stone-800 hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-60"
+                                className={secondaryButtonClassName}
                               >
                                 Edit
                               </button>
@@ -1404,7 +1389,7 @@ export default function Admin() {
                                 type="button"
                                 disabled={busy}
                                 onClick={() => deleteService(s._id)}
-                                className="rounded-lg bg-stone-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-stone-800 disabled:cursor-not-allowed disabled:opacity-60"
+                                className={darkButtonClassName}
                               >
                                 Delete
                               </button>
@@ -1419,28 +1404,22 @@ export default function Admin() {
             ) : null}
 
             {activeTab === "training" ? (
-              <div className="grid gap-8 lg:grid-cols-2">
-                <div>
-                  <h2 className="text-base font-semibold text-stone-900">
+              <div className="admin-grid-2">
+                <div className="admin-panel-card">
+                  <h2 className="admin-section-title">
                     {editingProgramId
                       ? "Edit training program"
                       : "Add training program"}
                   </h2>
-                  <form className="mt-4 space-y-4" onSubmit={saveProgram}>
-                    <fieldset
-                      disabled={busy}
-                      className="space-y-4 disabled:opacity-75"
-                    >
-                      <div>
-                        <label
-                          className="text-sm font-medium text-stone-700"
-                          htmlFor="program_title"
-                        >
+                  <form className="admin-form" onSubmit={saveProgram}>
+                    <fieldset disabled={busy} className="admin-fieldset">
+                      <div className="admin-field">
+                        <label className="admin-label" htmlFor="program_title">
                           Title
                         </label>
                         <input
                           id="program_title"
-                          className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-emerald-600"
+                          className={fieldClassName}
                           placeholder="e.g., Sustainability in Materials"
                           value={programDraft.title}
                           onChange={(e) =>
@@ -1452,16 +1431,16 @@ export default function Admin() {
                         />
                       </div>
 
-                      <div>
+                      <div className="admin-field">
                         <label
-                          className="text-sm font-medium text-stone-700"
+                          className="admin-label"
                           htmlFor="program_description"
                         >
                           Description
                         </label>
                         <textarea
                           id="program_description"
-                          className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-emerald-600"
+                          className={textareaClassName}
                           rows={4}
                           placeholder="What attendees will learn"
                           value={programDraft.description}
@@ -1474,18 +1453,15 @@ export default function Admin() {
                         />
                       </div>
 
-                      <div className="grid gap-4 sm:grid-cols-2">
-                        <div>
-                          <label
-                            className="text-sm font-medium text-stone-700"
-                            htmlFor="program_date"
-                          >
+                      <div className="admin-subgrid-2">
+                        <div className="admin-field">
+                          <label className="admin-label" htmlFor="program_date">
                             Date
                           </label>
                           <input
                             id="program_date"
                             type="date"
-                            className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none focus:border-emerald-600"
+                            className={fieldClassName}
                             value={programDraft.date}
                             onChange={(e) =>
                               setProgramDraft((p) => ({
@@ -1495,16 +1471,13 @@ export default function Admin() {
                             }
                           />
                         </div>
-                        <div>
-                          <label
-                            className="text-sm font-medium text-stone-700"
-                            htmlFor="program_mode"
-                          >
+                        <div className="admin-field">
+                          <label className="admin-label" htmlFor="program_mode">
                             Mode
                           </label>
                           <select
                             id="program_mode"
-                            className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none focus:border-emerald-600"
+                            className={selectClassName}
                             value={programDraft.mode}
                             onChange={(e) =>
                               setProgramDraft((p) => ({
@@ -1519,17 +1492,17 @@ export default function Admin() {
                         </div>
                       </div>
 
-                      <div className="grid gap-4 sm:grid-cols-2">
-                        <div>
+                      <div className="admin-subgrid-2">
+                        <div className="admin-field">
                           <label
-                            className="text-sm font-medium text-stone-700"
+                            className="admin-label"
                             htmlFor="program_duration"
                           >
                             Duration
                           </label>
                           <input
                             id="program_duration"
-                            className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-emerald-600"
+                            className={fieldClassName}
                             placeholder="e.g., 2 hours"
                             value={programDraft.duration}
                             onChange={(e) =>
@@ -1540,16 +1513,16 @@ export default function Admin() {
                             }
                           />
                         </div>
-                        <div>
+                        <div className="admin-field">
                           <label
-                            className="text-sm font-medium text-stone-700"
+                            className="admin-label"
                             htmlFor="program_location"
                           >
                             Location
                           </label>
                           <input
                             id="program_location"
-                            className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-emerald-600"
+                            className={fieldClassName}
                             placeholder="e.g., Hyderabad"
                             value={programDraft.location}
                             onChange={(e) =>
@@ -1563,11 +1536,11 @@ export default function Admin() {
                       </div>
                     </fieldset>
 
-                    <div className="flex gap-2">
+                    <div className="admin-action-row">
                       <button
                         type="submit"
                         disabled={busy}
-                        className="inline-flex items-center justify-center rounded-xl bg-emerald-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-60"
+                        className={primaryButtonClassName}
                       >
                         {busy
                           ? editingProgramId
@@ -1585,7 +1558,7 @@ export default function Admin() {
                             setEditingProgramId(null);
                             setProgramDraft(programEmpty);
                           }}
-                          className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-sm font-semibold text-stone-800 hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-60"
+                          className={secondaryButtonClassName}
                         >
                           Cancel
                         </button>
@@ -1593,31 +1566,22 @@ export default function Admin() {
                     </div>
                   </form>
                 </div>
-                <div className="space-y-8">
-                  <div>
-                    <h2 className="text-base font-semibold text-stone-900">
-                      Training programs
-                    </h2>
+                <div className="admin-stack-lg">
+                  <div className="admin-panel-card">
+                    <h2 className="admin-section-title">Training programs</h2>
                     {programs.length === 0 ? (
-                      <p className="mt-4 text-sm text-stone-600">
-                        No programs yet.
-                      </p>
+                      <p className="admin-empty">No programs yet.</p>
                     ) : (
-                      <div className="mt-4 overflow-hidden rounded-2xl border border-stone-200">
+                      <div className="admin-list">
                         {programs.map((p, idx) => (
                           <div
                             key={p._id}
-                            className={
-                              "p-4 " +
-                              (idx === 0 ? "" : "border-t border-stone-200")
-                            }
+                            className={`admin-list-item${idx === 0 ? "" : " admin-list-item-bordered"}`}
                           >
-                            <div className="flex items-start justify-between gap-4">
-                              <div className="min-w-0">
-                                <p className="text-sm font-semibold text-stone-900">
-                                  {p.title}
-                                </p>
-                                <p className="mt-1 text-xs text-stone-600">
+                            <div className="admin-record-row">
+                              <div className="admin-record-copy">
+                                <p className="admin-record-title">{p.title}</p>
+                                <p className="admin-record-meta">
                                   {p.mode}
                                   {p.date
                                     ? ` • ${String(p.date).slice(0, 10)}`
@@ -1626,21 +1590,21 @@ export default function Admin() {
                                   {p.location ? ` • ${p.location}` : ""}
                                 </p>
                                 {p.description ? (
-                                  <p className="mt-2 text-sm text-stone-600">
+                                  <p className="admin-record-text">
                                     {p.description}
                                   </p>
                                 ) : (
-                                  <p className="mt-2 text-sm text-stone-500">
+                                  <p className="admin-record-muted">
                                     No description.
                                   </p>
                                 )}
                               </div>
-                              <div className="flex shrink-0 gap-2">
+                              <div className="admin-item-actions">
                                 <button
                                   type="button"
                                   disabled={busy}
                                   onClick={() => editProgram(p)}
-                                  className="rounded-lg border border-stone-200 bg-white px-3 py-1.5 text-xs font-semibold text-stone-800 hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-60"
+                                  className={secondaryButtonClassName}
                                 >
                                   Edit
                                 </button>
@@ -1648,7 +1612,7 @@ export default function Admin() {
                                   type="button"
                                   disabled={busy}
                                   onClick={() => deleteProgram(p._id)}
-                                  className="rounded-lg bg-stone-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-stone-800 disabled:cursor-not-allowed disabled:opacity-60"
+                                  className={darkButtonClassName}
                                 >
                                   Delete
                                 </button>
@@ -1660,28 +1624,21 @@ export default function Admin() {
                     )}
                   </div>
 
-                  <div>
-                    <h2 className="text-base font-semibold text-stone-900">
-                      Participants
-                    </h2>
+                  <div className="admin-panel-card">
+                    <h2 className="admin-section-title">Participants</h2>
                     {participants.length === 0 ? (
-                      <p className="mt-4 text-sm text-stone-600">
-                        No participants yet.
-                      </p>
+                      <p className="admin-empty">No participants yet.</p>
                     ) : (
-                      <div className="mt-4 overflow-hidden rounded-2xl border border-stone-200">
+                      <div className="admin-list">
                         {participants.map((p, idx) => (
                           <div
                             key={p._id}
-                            className={
-                              "p-4 " +
-                              (idx === 0 ? "" : "border-t border-stone-200")
-                            }
+                            className={`admin-list-item${idx === 0 ? "" : " admin-list-item-bordered"}`}
                           >
-                            <p className="text-sm font-semibold text-stone-900">
+                            <p className="admin-record-title">
                               {p.name} ({p.email})
                             </p>
-                            <p className="mt-1 text-xs text-stone-600">
+                            <p className="admin-record-meta">
                               Program: {p.program_id?.title ?? "—"}
                             </p>
                           </div>
@@ -1694,46 +1651,35 @@ export default function Admin() {
             ) : null}
 
             {activeTab === "contacts" ? (
-              <div>
-                <h2 className="text-base font-semibold text-stone-900">
-                  Inquiries
-                </h2>
+              <div className="admin-panel-card">
+                <h2 className="admin-section-title">Inquiries</h2>
                 {contacts.length === 0 ? (
-                  <p className="mt-4 text-sm text-stone-600">
-                    No inquiries yet.
-                  </p>
+                  <p className="admin-empty">No inquiries yet.</p>
                 ) : (
-                  <div className="mt-4 overflow-hidden rounded-2xl border border-stone-200">
+                  <div className="admin-list">
                     {contacts.map((c, idx) => (
                       <div
                         key={c._id}
-                        className={
-                          "p-4 " +
-                          (idx === 0 ? "" : "border-t border-stone-200")
-                        }
+                        className={`admin-list-item${idx === 0 ? "" : " admin-list-item-bordered"}`}
                       >
-                        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                          <div className="min-w-0">
-                            <p className="text-sm font-semibold text-stone-900">
+                        <div className="admin-record-row">
+                          <div className="admin-record-copy">
+                            <p className="admin-record-title">
                               {c.name} ({c.email})
                             </p>
                             {c.subject ? (
-                              <p className="mt-1 text-xs text-stone-600">
+                              <p className="admin-record-meta">
                                 Subject: {c.subject}
                               </p>
                             ) : (
-                              <p className="mt-1 text-xs text-stone-500">
-                                No subject.
-                              </p>
+                              <p className="admin-record-muted">No subject.</p>
                             )}
-                            <p className="mt-2 text-sm text-stone-600">
-                              {c.message}
-                            </p>
+                            <p className="admin-record-text">{c.message}</p>
                           </div>
-                          <div className="flex items-center gap-2">
+                          <div className="admin-item-actions">
                             <select
                               disabled={busy}
-                              className="rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 outline-none focus:border-emerald-600 disabled:cursor-not-allowed disabled:opacity-60"
+                              className={selectClassName}
                               value={c.status}
                               onChange={(e) =>
                                 updateContactStatus(c._id, e.target.value)
@@ -1753,46 +1699,39 @@ export default function Admin() {
             ) : null}
 
             {activeTab === "collab" ? (
-              <div>
-                <h2 className="text-base font-semibold text-stone-900">
-                  Collaboration requests
-                </h2>
+              <div className="admin-panel-card">
+                <h2 className="admin-section-title">Collaboration requests</h2>
                 {collab.length === 0 ? (
-                  <p className="mt-4 text-sm text-stone-600">
-                    No collaboration requests yet.
-                  </p>
+                  <p className="admin-empty">No collaboration requests yet.</p>
                 ) : (
-                  <div className="mt-4 overflow-hidden rounded-2xl border border-stone-200">
+                  <div className="admin-list">
                     {collab.map((r, idx) => (
                       <div
                         key={r._id}
-                        className={
-                          "p-4 " +
-                          (idx === 0 ? "" : "border-t border-stone-200")
-                        }
+                        className={`admin-list-item${idx === 0 ? "" : " admin-list-item-bordered"}`}
                       >
-                        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                          <div className="min-w-0">
-                            <p className="text-sm font-semibold text-stone-900">
+                        <div className="admin-record-row">
+                          <div className="admin-record-copy">
+                            <p className="admin-record-title">
                               {r.name} ({r.email})
                             </p>
                             {r.organization ? (
-                              <p className="mt-1 text-xs text-stone-600">
+                              <p className="admin-record-meta">
                                 {r.organization}
                               </p>
                             ) : (
-                              <p className="mt-1 text-xs text-stone-500">
+                              <p className="admin-record-muted">
                                 No organization.
                               </p>
                             )}
                             {r.research_area ? (
-                              <p className="mt-2 text-sm text-stone-600">
+                              <p className="admin-record-text">
                                 Area: {r.research_area}
                               </p>
                             ) : null}
                             {r.proposal_file ? (
                               <a
-                                className="mt-2 block text-sm font-medium text-emerald-800 hover:underline"
+                                className={inlineLinkClassName}
                                 href={r.proposal_file}
                                 target="_blank"
                                 rel="noreferrer"
@@ -1800,23 +1739,25 @@ export default function Admin() {
                                 Open proposal file
                               </a>
                             ) : (
-                              <p className="mt-2 text-sm text-stone-500">
+                              <p className="admin-record-muted">
                                 No proposal file.
                               </p>
                             )}
                           </div>
-                          <select
-                            disabled={busy}
-                            className="rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 outline-none focus:border-emerald-600 disabled:cursor-not-allowed disabled:opacity-60"
-                            value={r.status}
-                            onChange={(e) =>
-                              updateCollabStatus(r._id, e.target.value)
-                            }
-                          >
-                            <option value="submitted">Submitted</option>
-                            <option value="approved">Approved</option>
-                            <option value="rejected">Rejected</option>
-                          </select>
+                          <div className="admin-item-actions">
+                            <select
+                              disabled={busy}
+                              className={selectClassName}
+                              value={r.status}
+                              onChange={(e) =>
+                                updateCollabStatus(r._id, e.target.value)
+                              }
+                            >
+                              <option value="submitted">Submitted</option>
+                              <option value="approved">Approved</option>
+                              <option value="rejected">Rejected</option>
+                            </select>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -1826,44 +1767,33 @@ export default function Admin() {
             ) : null}
 
             {activeTab === "custom" ? (
-              <div>
-                <h2 className="text-base font-semibold text-stone-900">
-                  Custom product requests
-                </h2>
+              <div className="admin-panel-card">
+                <h2 className="admin-section-title">Custom product requests</h2>
                 {customRequests.length === 0 ? (
-                  <p className="mt-4 text-sm text-stone-600">
-                    No requests yet.
-                  </p>
+                  <p className="admin-empty">No requests yet.</p>
                 ) : (
-                  <div className="mt-4 overflow-hidden rounded-2xl border border-stone-200">
+                  <div className="admin-list">
                     {customRequests.map((r, idx) => (
                       <div
                         key={r._id}
-                        className={
-                          "p-4 " +
-                          (idx === 0 ? "" : "border-t border-stone-200")
-                        }
+                        className={`admin-list-item${idx === 0 ? "" : " admin-list-item-bordered"}`}
                       >
-                        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                          <div className="min-w-0">
-                            <p className="text-sm font-semibold text-stone-900">
+                        <div className="admin-record-row">
+                          <div className="admin-record-copy">
+                            <p className="admin-record-title">
                               {r.company_name} ({r.email})
                             </p>
                             {r.industry ? (
-                              <p className="mt-1 text-xs text-stone-600">
-                                {r.industry}
-                              </p>
+                              <p className="admin-record-meta">{r.industry}</p>
                             ) : (
-                              <p className="mt-1 text-xs text-stone-500">
-                                No industry.
-                              </p>
+                              <p className="admin-record-muted">No industry.</p>
                             )}
-                            <p className="mt-2 text-sm text-stone-600">
+                            <p className="admin-record-text">
                               {r.product_description}
                             </p>
                             {r.attachment ? (
                               <a
-                                className="mt-2 block text-sm font-medium text-emerald-800 hover:underline"
+                                className={inlineLinkClassName}
                                 href={r.attachment}
                                 target="_blank"
                                 rel="noreferrer"
@@ -1871,23 +1801,25 @@ export default function Admin() {
                                 Open attachment
                               </a>
                             ) : (
-                              <p className="mt-2 text-sm text-stone-500">
+                              <p className="admin-record-muted">
                                 No attachment.
                               </p>
                             )}
                           </div>
-                          <select
-                            disabled={busy}
-                            className="rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 outline-none focus:border-emerald-600 disabled:cursor-not-allowed disabled:opacity-60"
-                            value={r.status}
-                            onChange={(e) =>
-                              updateCustomStatus(r._id, e.target.value)
-                            }
-                          >
-                            <option value="submitted">Submitted</option>
-                            <option value="in_review">In review</option>
-                            <option value="resolved">Resolved</option>
-                          </select>
+                          <div className="admin-item-actions">
+                            <select
+                              disabled={busy}
+                              className={selectClassName}
+                              value={r.status}
+                              onChange={(e) =>
+                                updateCustomStatus(r._id, e.target.value)
+                              }
+                            >
+                              <option value="submitted">Submitted</option>
+                              <option value="in_review">In review</option>
+                              <option value="resolved">Resolved</option>
+                            </select>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -1897,50 +1829,37 @@ export default function Admin() {
             ) : null}
 
             {activeTab === "files" ? (
-              <div className="grid gap-8 lg:grid-cols-2">
-                <div>
-                  <h2 className="text-base font-semibold text-stone-900">
-                    Upload file
-                  </h2>
-                  <p className="mt-2 text-sm text-stone-600">
+              <div className="admin-grid-2">
+                <div className="admin-panel-card">
+                  <h2 className="admin-section-title">Upload file</h2>
+                  <p className="admin-panel-desc">
                     Upload product images, brochures, PDFs, proposals.
                   </p>
-                  <div className="mt-4">
-                    <label className="text-sm font-medium text-stone-700">
-                      Choose a file
-                    </label>
+                  <div className="admin-field admin-field-tight">
+                    <label className="admin-label">Choose a file</label>
                     <input
                       disabled={busy}
-                      className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none focus:border-emerald-600 disabled:cursor-not-allowed disabled:opacity-60"
+                      className={fileInputClassName}
                       type="file"
                       onChange={(e) => uploadFile(e.target.files?.[0])}
                     />
                   </div>
                 </div>
-                <div>
-                  <h2 className="text-base font-semibold text-stone-900">
-                    Files
-                  </h2>
+                <div className="admin-panel-card">
+                  <h2 className="admin-section-title">Files</h2>
                   {files.length === 0 ? (
-                    <p className="mt-4 text-sm text-stone-600">No files yet.</p>
+                    <p className="admin-empty">No files yet.</p>
                   ) : (
-                    <div className="mt-4 overflow-hidden rounded-2xl border border-stone-200">
+                    <div className="admin-list">
                       {files.map((f, idx) => (
                         <div
                           key={f._id}
-                          className={
-                            "p-4 " +
-                            (idx === 0 ? "" : "border-t border-stone-200")
-                          }
+                          className={`admin-list-item${idx === 0 ? "" : " admin-list-item-bordered"}`}
                         >
-                          <p className="text-sm font-semibold text-stone-900">
-                            {f.file_name}
-                          </p>
-                          <p className="mt-1 text-xs text-stone-600">
-                            {f.file_type}
-                          </p>
+                          <p className="admin-record-title">{f.file_name}</p>
+                          <p className="admin-record-meta">{f.file_type}</p>
                           <a
-                            className="mt-2 block break-all text-sm font-medium text-emerald-800 hover:underline"
+                            className={`${inlineLinkClassName} admin-inline-link-break`}
                             href={f.url}
                             target="_blank"
                             rel="noreferrer"
@@ -1956,25 +1875,17 @@ export default function Admin() {
             ) : null}
 
             {activeTab === "content" ? (
-              <div className="max-w-3xl">
-                <h2 className="text-base font-semibold text-stone-900">
-                  Website content
-                </h2>
-                <form className="mt-4 space-y-4" onSubmit={saveSiteContent}>
-                  <fieldset
-                    disabled={busy}
-                    className="space-y-4 disabled:opacity-75"
-                  >
-                    <div>
-                      <label
-                        className="text-sm font-medium text-stone-700"
-                        htmlFor="content_vision"
-                      >
+              <div className="admin-panel-card admin-panel-card-wide">
+                <h2 className="admin-section-title">Website content</h2>
+                <form className="admin-form" onSubmit={saveSiteContent}>
+                  <fieldset disabled={busy} className="admin-fieldset">
+                    <div className="admin-field">
+                      <label className="admin-label" htmlFor="content_vision">
                         Vision
                       </label>
                       <textarea
                         id="content_vision"
-                        className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-emerald-600"
+                        className={textareaClassName}
                         rows={3}
                         placeholder="Short statement"
                         value={siteContent.vision}
@@ -1986,16 +1897,13 @@ export default function Admin() {
                         }
                       />
                     </div>
-                    <div>
-                      <label
-                        className="text-sm font-medium text-stone-700"
-                        htmlFor="content_mission"
-                      >
+                    <div className="admin-field">
+                      <label className="admin-label" htmlFor="content_mission">
                         Mission
                       </label>
                       <textarea
                         id="content_mission"
-                        className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-emerald-600"
+                        className={textareaClassName}
                         rows={3}
                         placeholder="Short statement"
                         value={siteContent.mission}
@@ -2007,16 +1915,16 @@ export default function Admin() {
                         }
                       />
                     </div>
-                    <div>
+                    <div className="admin-field">
                       <label
-                        className="text-sm font-medium text-stone-700"
+                        className="admin-label"
                         htmlFor="content_technologies"
                       >
                         Technologies
                       </label>
                       <input
                         id="content_technologies"
-                        className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-emerald-600"
+                        className={fieldClassName}
                         placeholder="Comma-separated (e.g., PLA, PHA, Recycled PET)"
                         value={joinList(siteContent.technologies)}
                         onChange={(e) =>
@@ -2028,10 +1936,10 @@ export default function Admin() {
                       />
                     </div>
 
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div>
+                    <div className="admin-subgrid-2">
+                      <div className="admin-field">
                         <label
-                          className="text-sm font-medium text-stone-700"
+                          className="admin-label"
                           htmlFor="content_contact_email"
                         >
                           Contact email
@@ -2039,7 +1947,7 @@ export default function Admin() {
                         <input
                           id="content_contact_email"
                           type="email"
-                          className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-emerald-600"
+                          className={fieldClassName}
                           placeholder="e.g., info@hanriaecotech.com"
                           value={siteContent.contactEmail}
                           onChange={(e) =>
@@ -2049,20 +1957,20 @@ export default function Admin() {
                             }))
                           }
                         />
-                        <p className="mt-2 text-xs text-stone-600">
+                        <p className="admin-field-help">
                           Contact form emails will be sent here.
                         </p>
                       </div>
-                      <div>
+                      <div className="admin-field">
                         <label
-                          className="text-sm font-medium text-stone-700"
+                          className="admin-label"
                           htmlFor="content_contact_location"
                         >
                           Location
                         </label>
                         <input
                           id="content_contact_location"
-                          className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-emerald-600"
+                          className={fieldClassName}
                           placeholder="e.g., Hyderabad, India"
                           value={siteContent.contactLocation}
                           onChange={(e) =>
@@ -2078,7 +1986,7 @@ export default function Admin() {
                   <button
                     type="submit"
                     disabled={busy}
-                    className="inline-flex items-center justify-center rounded-xl bg-emerald-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-60"
+                    className={primaryButtonClassName}
                   >
                     {busy ? "Saving…" : "Save"}
                   </button>
@@ -2087,58 +1995,46 @@ export default function Admin() {
             ) : null}
 
             {activeTab === "newsletter" ? (
-              <div className="grid gap-8 lg:grid-cols-2">
-                <div>
-                  <h2 className="text-base font-semibold text-stone-900">
-                    Subscribers
-                  </h2>
-                  <p className="mt-2 text-sm text-stone-600">
+              <div className="admin-grid-2">
+                <div className="admin-panel-card">
+                  <h2 className="admin-section-title">Subscribers</h2>
+                  <p className="admin-panel-desc">
                     Total subscribers: {subscribers.length}
                   </p>
                   {subscribers.length === 0 ? (
-                    <p className="mt-4 text-sm text-stone-600">
-                      No subscribers yet.
-                    </p>
+                    <p className="admin-empty">No subscribers yet.</p>
                   ) : (
-                    <div className="mt-4 overflow-hidden rounded-2xl border border-stone-200">
+                    <div className="admin-list">
                       {subscribers.slice(0, 20).map((s, idx) => (
                         <div
                           key={s._id}
-                          className={
-                            "px-4 py-3 text-sm text-stone-800 " +
-                            (idx === 0 ? "" : "border-t border-stone-200")
-                          }
+                          className={`admin-list-item${idx === 0 ? "" : " admin-list-item-bordered"}`}
                         >
-                          {s.email}
+                          <p className="admin-record-text admin-record-text-tight">
+                            {s.email}
+                          </p>
                         </div>
                       ))}
                     </div>
                   )}
                   {subscribers.length > 20 ? (
-                    <p className="mt-2 text-xs text-stone-500">
-                      Showing first 20.
-                    </p>
+                    <p className="admin-field-help">Showing first 20.</p>
                   ) : null}
                 </div>
-                <div>
-                  <h2 className="text-base font-semibold text-stone-900">
-                    Send email
-                  </h2>
-                  <form className="mt-4 space-y-4" onSubmit={sendNewsletter}>
-                    <fieldset
-                      disabled={busy}
-                      className="space-y-4 disabled:opacity-75"
-                    >
-                      <div>
+                <div className="admin-panel-card">
+                  <h2 className="admin-section-title">Send email</h2>
+                  <form className="admin-form" onSubmit={sendNewsletter}>
+                    <fieldset disabled={busy} className="admin-fieldset">
+                      <div className="admin-field">
                         <label
-                          className="text-sm font-medium text-stone-700"
+                          className="admin-label"
                           htmlFor="newsletter_subject"
                         >
                           Subject
                         </label>
                         <input
                           id="newsletter_subject"
-                          className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-emerald-600"
+                          className={fieldClassName}
                           placeholder="Email subject"
                           value={newsletterDraft.subject}
                           onChange={(e) =>
@@ -2149,16 +2045,16 @@ export default function Admin() {
                           }
                         />
                       </div>
-                      <div>
+                      <div className="admin-field">
                         <label
-                          className="text-sm font-medium text-stone-700"
+                          className="admin-label"
                           htmlFor="newsletter_text"
                         >
                           Message
                         </label>
                         <textarea
                           id="newsletter_text"
-                          className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-emerald-600"
+                          className={textareaClassName}
                           rows={6}
                           placeholder="Email text"
                           value={newsletterDraft.text}
@@ -2174,7 +2070,7 @@ export default function Admin() {
                     <button
                       type="submit"
                       disabled={busy}
-                      className="inline-flex items-center justify-center rounded-xl bg-emerald-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-60"
+                      className={primaryButtonClassName}
                     >
                       {busy ? "Sending…" : "Send"}
                     </button>
